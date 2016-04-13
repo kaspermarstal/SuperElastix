@@ -20,7 +20,7 @@ Mac OS X
     ::
         $ sudo pip install -U docker-compose
 
-- Build elastix with ELASTIX_BUILD_DASHBOARD set to ON.
+- Build SuperElastix with SUPERELASTIX_BUILD_DASHBOARD set to ON.
 
 - To fire up the dashboard server, run the following command in the Testing/Dashboard build directory.
 
