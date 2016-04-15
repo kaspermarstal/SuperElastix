@@ -9,3 +9,4 @@ Contents:
 
 .. toctree:: 
     GettingStarted
+    Dashboard
