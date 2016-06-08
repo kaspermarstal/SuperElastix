@@ -54,9 +54,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SimpleElastix'
-copyright = u'2015, Kasper Marstal'
-author = u'Kasper Marstal'
+project = u'SuperElastix'
+copyright = u'2016, Erasmus MC, LUMC'
+author = u'Kasper Marstal, Floris Berendsen'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
