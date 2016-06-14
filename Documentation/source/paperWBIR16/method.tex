@@ -1,0 +1,160 @@
+\section{Method}
+\label{sec:method}
+The design we propose
+consists of three key elements: a) an
+algorithmic network topology that is completely user-configurable, b) a generic component design that is
+able to capture a broad diversity of functionalities, and c) a user
+configuration that dynamically (without programming) sets up the
+network, performs validation via a handshake mechanism, and establishes a connection between
+components. In the following sections, we describe the network, how we define components and
+how they connect, and how the algorithm is executed.
+
+\subsection{User configurable component networks}
+
+From the analysis of registration algorithms in Section
+\ref{sec:analysis} we concluded that although components may be
+equal among paradigms, the algorithmic networks can be very
+different. Instead of adhering to one algorithmic network (e.g.
+\elastix{}) or programmatically hard-code a variety of paradigms
+(e.g. ANTs, plastimatch), we make the network topology part of the
+user configuration as well. That is, on a high-level the user
+describes the network layout in terms of nodes and connections.
+Due to the large variety of possible networks we use a light-weighted notion of a network, which is not intrinsically tied to specific functionality of the components at its nodes.
+Instead, we choose to define all components to be
+handled generically and to dispatch the conceptual validation of the
+user configuration to a handshake mechanism, which is explained
+next. On a software level the network is modeled as a (boost) graph, where the nodes denote components and the vertices denote connections. 
+Examples of such networks are given in Figure \ref{fig:networks}.
+
+\subsection{Component handshakes}
+
+Currently the majority of registration toolboxes adhere a classical
+object-oriented design that decomposes the registration problem into
+classes like metrics, transforms, optimizers, etc. Extended types of
+behavior (mutual information, affine transform, etc) are implemented
+via subtyping. However, as we concluded in Section
+\ref{sec:analysis}, this decomposition is generally different among
+paradigms and toolboxes, and hampers unification. To address the
+so-called ``tyranny of the dominant decomposition''
+\cite{Tarr:separation}, we introduce a role-based software paradigm,
+similar to the Data Context Interaction (DCI) pattern, for
+specifying collaboration between components. Building our toolbox
+around this design pattern, we are able to reuse code bases without
+suffering from the effects of invasive modification and
+re-architecture. 
+This design allows to cherry-pick behavioral aspects that components
+have in common, without a strict classification what that component
+is. 
+
+Fundamental to our design is a generic handshake mechanism that
+validates whether components can be connected or not. This mechanism
+performs the necessary checks on what a component can do, which is
+required to establish a connection. The advantage of explicitly
+handling this generically and on a higher level, is that components
+themselves do not need to perform these checks on neighboring
+components, which would require a component to embed specific
+knowledge about other components. The proposed design counters the
+entanglement between the sets of components of the same code base
+and opens up the potential for cross-paradigm connections.
+
+To manage all possible types of collaboration, we maintain an
+extensible collection of so-called interfaces between components.
+Any component in our toolbox must be defined in terms of one or more
+interfaces, which are either \emph{accepting} or \emph{providing}.
+Figure \ref{fig:interface} illustrates a component based on various
+interfaces. 
+The user configures a generic connection between the components, while a handshake mechanism determines the types of interfaces and their compatibility.
+If a connection is
+possible, the component with the accepting interface gains control
+over the communication and is responsible for setting up its
+internals for the execution of the registration algorithm.
+At the start of the execution of an algorithm all components check if sufficient accepting interfaces have been connected.
+
+From an implementation point of view, all interfaces are defined as
+abstract base classes, in the DCI pattern, also known as methodless
+Roles. Via helper classes that are variadicly templated, a component
+class inherits from any number of interface classes either being
+accepting or providing. The developer of a component is responsible
+for implementing all chosen interfaces, i.e. methodful Roles in DCI.
+In the handshake mechanism compatibility is verified based on the
+C++ types of the interfaces. While the number of types of interfaces
+may increase with future developments, the handshake mechanism
+itself is very general and not that sensitive to changes, due to its
+loose coupling to component functionality. As an example, a
+handshake mechanism may be in place where image samplers
+\emph{provide} a list of samples, while metrics or more aggregated
+components \emph{accept} a list of samples. When a new sampling
+component becomes available it does not need to inherit from a base
+sampling class, which often will require code refactoring, but only
+needs to define a providing interface.
+
+Within this design the notion of hybrid components (components that
+fulfill multiple tasks) is captured naturally, by simply proving
+different accepting or providing interfaces. In this way monolithic
+blocks that implement a full registration pipeline can also be
+easily integrated in the toolbox.
+
+\begin{figure}
+\centering
+ \scalebox{1.0}{
+  \input{connectors.pdf_tex}
+ }
+\caption{Component handshakes are performed at run-time based on
+interface types. The toolbox maintains an extensible list of
+possible interfaces,
+e.g.~\protect\includegraphics[height=1.2ex]{IFrect.pdf}
+\protect\includegraphics[height=1.2ex]{IFmoon.pdf}
+\protect\includegraphics[height=1.2ex]{IFstar.pdf}
+\protect\includegraphics[height=1.2ex]{IFtriangle.pdf}
+\protect\includegraphics[height=1.2ex]{IFbarbapappa.pdf}
+\protect\includegraphics[height=1.2ex]{IFsquare.pdf},
+by which components can connect and collaborate.}
+\label{fig:interface}
+\end{figure}
+
+\subsection{Algorithm embedding}
+
+Whereas previously we described the core functionality of the
+toolbox, i.e. the setup of components, the network layout and the
+handshake between components, this subsection describes how this
+network is embedded in the toolbox, how the algorithm is executed
+and how data is passed to and from the toolbox.
+
+For a good deployment of our toolbox it will be provided as a
+library. This can then be naturally integrated in many different
+software interfaces, such as a command-line application, GUI
+applications or scripting languages. Figure \ref{fig:toolbox_layout}
+schematically illustrates how the \SuperElastix{} library is
+embedded, which incorporates an Overlord and the registration
+network. The Configuration Object acts as an intermediate
+representation of the user-specified configuration of the
+registration algorithm. This contains the network description, the
+component names and their settings. In a command-line tool this
+configuration is read from disk, whereas in library usage it serves
+as a lightweight container that can be manipulated, passed and
+stored without requiring disk access.
+
+When a Configuration Object is passed to \SuperElastix{} the
+Overlord performs three steps: a) it parses the configuration and
+instantiates the network with the required components, providing the
+user with feedback on any incompatibilities between components, as detected by the handshake mechanism, b)
+it connects the network's Sink and Source components to external
+data (pipelines), and c) it executes the registration algorithm by connecting itself, via a handshake, to the component that includes the execution trigger.
+
+The Sink and Source component are illustrated by dashed lines in
+Figure \ref{fig:toolbox_layout} and are special types of components
+in the sense that the Overlord performs handshakes to these
+components to let the data pass. By configuring Sink and Source
+components the user controls whether components should create and
+pass data such as images, deformation fields or point sets.
+
+\begin{figure}
+\centering
+ \scalebox{1.0}{
+  \input{toolbox_layout.pdf_tex}
+ }
+\caption{The grand design of the \SuperElastix{} toolbox. The
+toolbox can be used as a command-line application or be embedded in
+other applications and scripting languages as a library. In this illustration $F$, $M$ and $\phi$ are examples of typical sources and sinks, but the framework supports any type of source and sink.}
+\label{fig:toolbox_layout}
+\end{figure}

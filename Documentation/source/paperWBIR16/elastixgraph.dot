@@ -1,0 +1,9 @@
+digraph elastix {
+elastix;
+SourceFixed;
+SourceMoving;
+SinkImage;
+elastix->SinkImage ;
+SourceFixed->elastix ;
+SourceMoving->elastix ;
+}

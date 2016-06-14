@@ -1,0 +1,131 @@
+\section{Introduction}
+\label{sec:introduction}
+% no \IEEEPARstart
+
+The objective of image registration is to find the spatial
+relationship between two or more images. Typically, intensity-based
+registration methods are formulated as an optimization problem. A
+transform describes the geometric mapping from one image to the
+other, a metric determines the dissimilarity between the images, and
+an optimizer searches for the transform giving the highest
+similarity between images.
+
+In the last decades numerous image registration methods and tools
+have emerged from the research community. Implementation of these
+methods, however, are scattered over a plethora of toolboxes each
+with their own interface, limitations and modus operandi. It is
+therefore difficult for (clinical) researchers and company
+developers alike, to rigorously compare registration methods and
+select the appropriate one for a given application.
+
+The scattering is amongst others driven by the difference in
+paradigms that tend to divide the field of image registration.
+Opposing approaches are, for example, small deformation versus large diffeomorphic
+deformation, and non-parametric versus parametric transforms. While
+most software designs structure the algorithmic concepts of a
+registration method in a modular fashion, i.e. having a notion of a
+metric, transform or optimizer, the definition of these modules may
+not be functionally compatible across paradigms. Current
+registration software is typically tailored to the paradigm it
+adheres, mixed with the role of mathematical definitions, data
+representation and computational tricks. This severely reduces
+software compatibility across toolboxes, and therefore the ability
+to share components or truly compare methods rather than
+implementation choices.
+
+There are several interesting registration toolboxes that we mention
+here. Arguably the greatest collection of image registration tools
+can be found in the Insight ToolKit (ITK) \cite{itk}. This toolkit
+implements several registration paradigms, 
+most notably the parametric
+intensity-based paradigm. A new framework (denoted by the extension
+v4) partly supersedes the original framework and adds diffeomorphic and symmetric
+registration capabilities. In addition there are the
+PDEDeformableRegistration and variational framework, both implementing variations on Demons registration.
+ These
+paradigms, however, exhibit different object oriented software
+designs, which has led to incompatibility of some of the
+registration components. It is therefore difficult to develop new
+algorithms that cross the borders of paradigms, as it requires a
+large effort to re-factor one design into another. In addition, the
+ITK provides C++ implementations rather than ready-to-use software.
+
+Other works, using and extending ITK, are ANTs \cite{Ants}, \cite{Avants:SyN} \cite{Tustison:BSSyN}, \elastix\ \cite{elastix}, DRAMMS \cite{Ou:Dramms} and
+plastimatch \cite{Sharp:plastimatch}, \cite{Shackleford:plastimatch}. 
+Additionally, there are several non-ITK-based implementations including NiftyReg \cite{Modat:Niftyreg}.
+
+These tools provide a
+high-level interface (no need for programming) to configure a
+registration algorithm. Many options are usually available for each
+of the registration components. Rigorous evaluation to find the best
+application specific configuration can, however, only be performed
+within the specific paradigm or toolbox. This requires the
+researcher to become acquainted with the various tools, each with
+their own interface, parameters and peculiarities. Examples of such
+evaluation studies include \cite{Kanai:Evaluation},
+\cite{Murphy:Empire}, \cite{Klein:Evaluation},
+\cite{Ou:Comparative}, 
+\cite{Varadhan:Framework}.
+
+Usability of these tools is greatly improved by environments like Nypipe \cite{Gorgolewski:Nipype} and Pydpiper \cite{Friedel:pydpiper}, which wrap each
+algorithm as a module in a single python environment. This lowers
+the barrier for a user as it requires dealing with only one
+environment instead of multiple different environments (command
+line, bash scripts, Python, Matlab, etc). A remaining disadvantage
+however is that each paradigm is still treated as a monolithic block
+and provides little uniformity for the detailed settings of each
+algorithm. Analyzing the registration methods for a deeper
+understanding of the performance differences is limited by the
+ability to make their settings uniform, since the underlying
+implementations are still different even for similar components. In
+addition, these tools provide an interface for Python only, whereas
+different users require different interfaces.
+
+In this paper we propose a general design for unifying registration paradigms, a translation to a software design and a toolbox with an initial implementation.
+Specific aims for the toolbox are i)
+that the interface should be user-friendly; ii) that a single
+interface can be used for a broad range of registration paradigms;
+iii) that it should support algorithm modularity; which should iv)
+lead to the simplification of the tuning of registration
+configurations optimal for a specific task; and v) enable rigorous
+comparison of registration methods rather than implementation
+choices. In such an environment the user can evaluate mathematical
+(or implementation) choices of specific differences between
+paradigms, while eliminating the differences of other components.
+Furthermore, the toolbox should provide a (research) environment
+enabling exploration of cross-fertilization between paradigms.
+
+At the core of our design there are two observations. First, even for
+conceptually very different frameworks, many components are
+functionally identical, albeit that those components are sometimes
+used differently. And secondly, almost all registration algorithms can be
+characterized by a network that organizes and connects the several
+components. While some paradigms strictly split the registration
+into separate modules consisting for example of a metric, a
+transform and an optimizer, other paradigms combine components into
+a larger block that performs the task of both the metric and a
+transform. Sometimes the components are even so entangled that the
+registration should be considered a single block. In other words, we
+need heterogeneous levels of functionality and granularity.
+
+In order to implement a unifying registration toolbox we propose to
+reformulate registration algorithms into a software design similar
+to a collaboration-based or role-based software design \cite{VanHilst:Role}, \cite{Smaragdakis:Mixin}. In
+contrast to a typical object-oriented design, a registration
+component is defined by what it can do (the role) instead of what it is (the class type), thereby allowing utilization of functionality across
+paradigms. To this end a generic handshake mechanism is implemented
+to verify whether connected components are compatible on a
+mathematical as well as on a software level, thus constructing a
+valid network topology. Via a single user-interface a high level
+configuration is supplied, from which at run-time the corresponding
+components are selected, connected into a network and executed.
+
+In the remainder of the paper we perform an analysis of several
+existing registration paradigms (Section \ref{sec:analysis}), based
+on which we will propose a design for a unifying registration
+toolbox (Section \ref{sec:method}). Section \ref{sec:results} then gives initial results
+where we show that the toolbox is operational and allows for
+specifying, running and comparing quite different registration
+frameworks from a single toolbox. We end with a general discussion,
+outlook and conclusion in Section \ref{sec:discussion}.
+

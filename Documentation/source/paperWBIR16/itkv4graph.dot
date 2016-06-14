@@ -1,0 +1,15 @@
+digraph G{
+size="5,5"
+ratio=compress
+itkRegistrationMethodv4;
+SourceFixed{rank=source};
+SourceMoving{rank=source};
+SinkImage;
+SinkDeformationField;
+itkMetricv4;
+itkRegistrationMethodv4->SinkImage;
+itkRegistrationMethodv4->SinkDeformationField;
+SourceFixed->itkRegistrationMethodv4;
+SourceMoving->itkRegistrationMethodv4;
+itkMetricv4->itkRegistrationMethodv4;
+}
