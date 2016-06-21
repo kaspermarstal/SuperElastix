@@ -53,14 +53,7 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 
 2. Select compiler.
     - Press configure to bring up the compiler selection window.
-    - Check whether our target languages are installed as 32-bit or 64-bit. For example, if our Python installation is 64-bit, we will need to build the 64-bit version of SuperElastix to link it. If at all possible, we choose the 64-bit version since the build may run out of memory on 32-bit platforms.
-    - Choose a compiler and click next. CMake will find the selected compiler for us if we leave the "Use default native compiler" option checked.
-
-    .. tip::
-
-        - If we need a compiler other than the default system option, we select "Specify native compilers". If we don't know what this means or what we need, we leave the "Use default native compiler" option checked.
-        - If CMake complains that a compiler cannot be found, we install the free `Visual Studio Community Edition <https://www.visualstudio.com/>`_ .
-    - Press generate.
+    - Preferably, choose Visual Studio 12 2013 Win64 as the generator for the project. SuperElastix can only be compiled with Visual Studio 12 or newer, and if the OS is 64-bit that is also the prefered for the compiler. 
 
 3. Open Visual Studio, select File -> Open Project/Solution -> Open and choose :code:`SuperBuildSuperElastix` solution.
 
@@ -69,9 +62,15 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 
 5. Right-click on :code:`ALL_BUILD` and click :code:`Build`.
 
+6. The SuperBuildSuperElastix solution only shows each library as a project. To have a more detailed view of SuperElastix open the SuperElastix solution file  :code:`<build-path>\SuperElastix-build\SuperElastix.sln` in a new Visual Studio environment.
 
-Manually Building On Linux
---------------------------
+7. The SuperElastix executable can be found in :code:`<build-path>\SuperElastix-build\bin\Release`
+
+8. Unit Tests and example code can be run by right-clicking on :code:`RUN_TESTS` and clicking :code:`Project Only -> Build Only RUN_TESTS`. Alternatively, individual tests can be run by right-clicking on a specific selx<...>Test project and choosing :code:`Set as StartUp Project`.
+
+Manually Building the Required Libraries
+----------------------------------------
+Instead of letting the SuperBuild download and build the required libraries they can be build manually as well.
 The following approach allows us to use a system version of ITK or our own version of elastix. 
 
 1. Install ITK. 
