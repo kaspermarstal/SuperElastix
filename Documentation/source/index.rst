@@ -9,5 +9,5 @@ Contents:
 
 .. toctree:: 
     GettingStarted
-	Usage
+    Usage
     Dashboard

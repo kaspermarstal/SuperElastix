@@ -70,7 +70,7 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 
 Manually Building the Required Libraries
 ----------------------------------------
-Instead of letting the SuperBuild download and build the required libraries they can be build manually as well.
+Instead of letting the SuperBuild download and build the required libraries manually build libraries can be used as well.
 The following approach allows us to use a system version of ITK or our own version of elastix. 
 
 1. Install ITK. 
