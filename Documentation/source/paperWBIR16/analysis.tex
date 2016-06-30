@@ -1,0 +1,177 @@
+\section{Analysis of registration methodologies}
+\label{sec:analysis}
+
+To inventorize the requirements of the design of a unifying toolbox
+we analyzed a selection of registration paradigms.
+The selection was made
+such that it covers some interesting variations among paradigms.
+Currently, the selection excludes approaches such as discrete
+optimization \cite{Glocker:Drop} \cite{Heinrich:Deeds}, groupwise registration \cite{Wachinger:Simultaneous}, geodesic
+shooting \cite{Ashburner:shooting} and other Lagrangian or Hamiltonian
+\cite{Vialard:AdjointShooting} methods. However, we aim for a general design
+that can capture a wider span of paradigms, thus keeping
+possibilities open for integration of those paradigms and additionally future
+developments. The notation used in this paper is summarized in Table
+\ref{tab:symbols}.
+
+
+\begin{table}[b]
+\centering \caption{Notation used in this paper.}\label{tab:symbols}
+\begin{tabular}{lllllll}
+\toprule
+symbol&description\\
+\midrule
+$F$         & Fixed image\\
+$M$         & Moving image\\
+$T(\bm{x};\bm{\mu})$ & Parameterized transformation\\
+$\bm{\mu}$  & Transformation parameters\\
+%$\nabla\mathcal{S}$ & metric derivative\\
+$\delta {\bm{\mu}}$  & parameter updates\\
+$\phi$      & deformation field to moving\\
+$\phi^{-1}$ & deformation field to fixed\\
+$\delta v$  & forces update field\\
+%$\phi_i$    & deformation field to virtual\\
+$S_\phi()$, $S_v()$  & diffusion-like regularization\\
+$S_\delta()$& fluid-like regularization\\
+$v_t$       & time varying velocity field\\
+%$V$         & Virtual (in between image)\\
+%$v_i$       & (greedy) update velocity field\\
+$v_\mathrm{stat}$   & stationary velocity field\\
+$\mathrm{BCH}$  & Baker-Campbell-Hausdorff update rule\\% for $v_\mathrm{stat}$\\%
+%&Moving gradient&&&$-\nabla (M\circ\phi)(x)$&-&\\
+%&symmetric gradient&&&\scalebox{0.5}{$-\frac{(\nabla F(x) + \nabla (M \circ \phi)(x))}{2}$}&\scalebox{0.5}{$\frac{(\nabla F(x) + \nabla (M \circ \phi)(x))}{2}$}&\\
+%&Thirion's gradient&&&$-\nabla F(x)$&&\\       \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Existing methods}
+
+The majority of established registration algorithms exhibits distinct
+conceptual components each performing a sub-task in the registration
+procedure. Across toolboxes and paradigms, however, these components
+can vary in functionality and granularity. Some toolboxes are
+subdivided into many small components, while others consist of a few
+larger components. These components can be part of multiple or only
+a single paradigm. Even if components implement the same concept
+they may not be interchangeable due to mathematical or software
+differences.
+
+To expose the typical variation among toolboxes and paradigms, we
+analyzed 5 registration methods in detail, namely: B-spline
+registration \cite{elastix}, log-diffeomorphic Demons \cite{Ashburner:Dartel}, time varying velocity field
+registration \cite{Tustison:BSSyN}, symmetric log-diffeomorphic Demons \cite{Vercauteren:SymLogDemons} and greedy
+Symmetric Normalization (gSyN) \cite{Avants:SyN}.
+We created detailed networks to facilitate analysis of these
+paradigms, see Figure \ref{fig:networkanalysis}.
+
+The first example, as illustrated in Figure \ref{fig:bspline}, is a
+registration with a parametric transform, e.g. a B-spline transform
+which is parameterized by coefficients $\bm{\mu}$.
+The parameters $\bm{\mu}$ span a Euclidean space of possible
+solutions in which the optimizer searches for the optimal image
+alignment. The assumption of a Euclidean optimization space versus a
+manifold (subspace) is fundamental for many optimization strategies.
+For example, a large group of optimization strategies performs
+incremental updates of the form $\bm{\mu}^{k+1} = \bm{\mu}^k +
+\bm{\mu}_\delta^k$, amongst others (unconstrained) gradient descent
+routines, such as conjugate gradient, adaptive stochastic gradient
+descent, or quasi-Newton methods.
+
+Variations on Demons registration, such as diffeomorphic Demons (not
+illustrated) and log-diffeomorphic Demons \cite{Dru:LogDemons}
+(Figure \ref{fig:LogDemons}) introduce, amongst others, different
+update rules. Instead of the incremental update $\phi^{k+1} = \phi^k
++ \phi_\delta^k$ in classical Demons, a functional composition
+$\phi^{k+1} = \phi^k \circ \phi_\delta^k$ is used in diffeomorphic
+Demons. Another difference is that where diffeomorphic Demons models
+the transformation by a vector field pointing from one image to the
+other, the log-diffeomorphic Demons models such transformations by a
+stationary velocity field. Instead of an additive or compositional
+update log-diffeomorphic Demons uses the function
+$v_\mathrm{stat}^{k+1} = \mathrm{BCH}\left(v_\mathrm{stat}^{k},
+\phi_\delta^k\right)$. 
+
+While the velocity field of the log-diffeomorphic Demons transform
+is a stationary vector field, LDDMM-based approaches \cite{Beg:LDDMM}, see Figure
+\ref{fig:timevarying}, use a time varying velocity field. The
+modeling of a (virtual) time results in an extra dimension on the
+velocity field, which can be expressed by parallel paths in the
+network layout.
+
+Various registration methods focus on symmetry of the mapping
+process, so that interchanging the role of the fixed and moving
+image does not produce different results. Examples of these methods
+are the symmetric version of log-Demons, see Figure
+\ref{fig:SymLogDemons} and greedy SyN (gSyN) \cite{Avants:SyN}, see
+Figure \ref{fig:SyN}. The symmetry imposed by registration methods
+is typically reflected in the network layout. Whereas gSyN consists
+of two fully (anti) symmetric paths, the network of symmetric
+log-Demons exposes only a partial symmetry.
+
+\begin{figure*}[!tb]
+\centering
+\subfloat[B-spline registration]{
+  \scalebox{0.6}{\input{bsplines5.pdf_tex}}
+  \label{fig:bspline}
+}
+\hfil
+\subfloat[Log-diffeomorphic Demons]{
+  \scalebox{0.6}{\input{logdem5.pdf_tex}}
+  \label{fig:LogDemons}
+} \hfil \subfloat[ANTs time varying velocity field registration.
+ANTs' interpretation of LDDMM.]{
+  \scalebox{0.6}{\input{timevarying5.pdf_tex}}
+  \label{fig:timevarying}
+}
+\hfil
+\subfloat[Symmetric log-diffeomorphic Demons]{
+  \scalebox{0.6}{\input{symlogdem5.pdf_tex}}
+  \label{fig:SymLogDemons}
+}
+\hfil
+\subfloat[Greedy Symmetric Normalization (gSyN)]{
+  \scalebox{0.6}{\input{syn5.pdf_tex}}
+  \label{fig:SyN}
+} \caption{Networks of five exemplary registration
+frameworks.}\label{fig:networkanalysis}
+\end{figure*}
+
+\subsection{Analysis}
+
+Generalizing from the discussion above, in order to come to a
+unifying design, we observe the following. Registration algorithms
+can generally be described as networks of functional components. The
+network layout of the various registration paradigms, however, are
+considerably different. Some networks may be summarized as a
+pipeline of components, whereas others may consist of parallel paths
+(e.g. symmetric Demons and gSyN) with more or less
+inter-connectivity between the components. Among paradigms,
+components of a network can be present in other networks as well,
+although possibly at different locations.
+
+Components also vary in how exchangeable they are between paradigms.
+Some components are completely paradigm specific, such as the inversion component from gSyN in Figure \ref{fig:SyN}. Other
+components can be freely exchanged between paradigms, for example
+image blurring components for multi-resolution approaches (not shown). In between there is a gray area of components
+that seem similar task-wise, but due to mathematical differences
+between paradigms the components are not straightforwardly
+interchangeable.
+Examples are in the group of metric components: Demons metrics generally include dedicated terms for the ESM optimization routine which are not present in B-spline registration, and B-spline methods integrally perform a mapping of the metric gradient to the B-spline transform parameters.
+instead of providing a vector field like in Demons and other diffeomorphic methods.
+This difference can have a
+software-related origin as well, for instance when the type of data
+communicated between components differs, or when toolboxes have a slightly different definition of the boundaries of a component.
+
+The degree of granularity of paradigms can be different as well.
+For example in parametric (e.g. B-spline) registration the optimization strategy is typically regarded as a plug-in component, which can be chosen independently from the transformation model, whereas in gSyN the optimization strategy is inherent to the registration paradigm.
+To regard components as potentially being composed of multiple tasks has a practical advantage as well, as it would enable
+integration of complete toolboxes coarse-grained or even monolithically.
+
+To conclude, a design that can capture a broad variety of paradigms
+1) needs to be very flexible with respect to the algorithmic network
+layout and 2) needs to be able to capture a wide variation 
+of components with various levels of granularity. We therefore propose to follow a
+collaboration-based or role-based software design pattern
+\cite{Smaragdakis:Mixin}, in which the definition of a component is
+defined by the role(s) it can take, rather than by its inheritance,
+as is used in all current major registration toolboxes.

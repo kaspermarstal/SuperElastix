@@ -1,0 +1,60 @@
+%% Creator: Inkscape 0.48.5, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'synth_alignment.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{216.2484375bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.15246132)%
+    \put(0,0){\includegraphics[width=\unitlength]{synth_alignment.pdf}}%
+    \put(-0.00011742,0.11707412){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25900296\unitlength}\raggedright \small$I$\end{minipage}}}%
+    \put(0.05537431,0.04308517){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.16651674\unitlength}\raggedright \small$x$\end{minipage}}}%
+    \put(0.09241034,0.00078397){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Difference-based}}}%
+    \put(0.6288304,0.00078397){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Correlation-based}}}%
+    \put(0.53630264,0.11707412){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.25900296\unitlength}\raggedright \small$I$\end{minipage}}}%
+    \put(0.59179437,0.04308515){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.16651674\unitlength}\raggedright \small$x$\end{minipage}}}%
+  \end{picture}%
+\endgroup%

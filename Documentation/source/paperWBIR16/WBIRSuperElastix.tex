@@ -1,0 +1,102 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+% by floris:
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage{import}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{authblk}
+
+%\newcommand{\SuperElastix}{\textit{[anonymized]}}
+\newcommand{\SuperElastix}{\texttt{\textsc{super}elastix}}
+\newcommand{\elastix}{\texttt{elastix}}
+\newcommand{\hide}[1]{}
+\usepackage{booktabs}
+
+\usepackage{url}
+\usepackage{relsize}
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{9} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{The design of \SuperElastix -- a unifying framework for a wide range of image registration methodologies}
+
+\author[1]{Floris F. Berendsen}
+\author[2]{Kasper Marstal}
+\author[2]{Stefan Klein}
+\author[1]{Marius Staring}
+\affil[1]{Division of Image Processing (LKEB), Department of Radiology, Leiden University Medical Center,
+P.O. Box 9600, 2300 RC Leiden, the Netherlands\\
+\{{\tt\small f.berendsen,m.staring}\}{\tt\small @lumc.nl}}
+\affil[2]{Biomedical Imaging Group Rotterdam
+Erasmus MC, University Medical Center Rotterdam
+Departments of Medical Informatics and Radiology,
+P.O. Box 2040, 3000 CA Rotterdam, the Netherlands\\
+\{{\tt\small k.marstal,s.klein}\}{\tt\small @erasmusmc.nl}}
+
+\hide{
+\author{Floris F. Berendsen\\
+{\tt\small f.berendsen@lumc.nl}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Kasper Marstal\\
+{\tt\small k.marstal@erasmusmc.nl}
+\and Stefan Klein\\
+{\tt\small s.klein@erasmusmc.nl}
+\and Marius Staring\\
+{\tt\small m.staring@lumc.nl}
+}
+}
+\hide{
+Division of Image Processing (LKEB), Department of Radiology, Leiden University Medical Center\\
+P.O. Box 9600, 2300 RC Leiden, the Netherlands
+\and
+Biomedical Imaging Group Rotterdam
+Erasmus MC, University Medical Center Rotterdam
+Departments of Medical Informatics and Radiology\\
+P.O. Box 2040, 3000 CA Rotterdam, the Netherlands
+}
+
+\maketitle
+%\thispagestyle{empty}
+\subimport{}{abstract}
+\subimport{}{introduction}
+\subimport{}{analysis}
+\subimport{}{method}
+\subimport{}{results}
+\subimport{}{discussion}
+%\subimport{}{conclusion}
+\subimport{}{acknowledgment}
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{WBIRSuperElastix}
+}
+
+\end{document}
