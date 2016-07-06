@@ -1,0 +1,21 @@
+\section{Discussion and Conclusions}
+\label{sec:discussion}
+\label{sec:conclusion}
+In this paper we propose a design for a unifying toolbox based on the analysis of multiple registration paradigms.
+Our design uses a role- and collaboration-based software design pattern as a framework to unify the very diverse algorithms found in literature.
+This framework captures components with various degrees of granularity and functionality, as they are found in most toolboxes, and lets the user configure the network layout of the registration components.
+To validate the user configuration we set up a handshake mechanism that checks whether connected components are compatible, i.e. have the correct interfaces for collaboration. After a successful configuration the registration algorithm is executed using data from user-defined sources and sinks.
+
+Whereas this paper primarily presents the generic design that we propose, together with an initial implementation and results, the functionality of the toolbox can be greatly extended.
+An immediate point of action is to extend the
+functionality of the toolbox by including components from more registration paradigms, and to include more fine-grained components, such as optimizers, transforms and multi-resolution handling.
+This modularization will obviously lead to more complex network graphs than currently shown in the paper.
+Furthermore, we aim to include paradigms from non-ITK-based code bases, while keeping in mind component compatibility for cross fertilization of paradigms.
+
+The toolbox is available as open source at 
+\url{https://github.com/kaspermarstal/SuperElastix}
+%\url{https://github.com/[anonymized]/[anonymized]},  
+where the latest version can be found and where all developments can be followed.
+
+The design we presented is both capable of generalizing across paradigms, fully supporting modularity, as well as provides an on-ramp for method integration.
+This makes it a suitable foundation for a unifying registration toolbox, which, as we hope, should drastically improve the accessibility of a wide range of modern registration capabilities to a diverse audience.

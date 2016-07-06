@@ -1,0 +1,91 @@
+%% Creator: Inkscape 0.48.5, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'syn5.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{600.04921875bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.30397506)%
+    \put(0,0){\includegraphics[width=\unitlength]{syn5.pdf}}%
+    \put(-0,0.19533374){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi_1$}}}%
+    \put(0.12665628,0.20866622){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Metric}}}%
+    \put(0.12665628,0.18200174){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\left(F\circ\phi_1, M\circ\phi_2\right)$}}}%
+    \put(-0,0.26199485){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi_1^{-1}$}}}%
+    \put(0.27331091,0.20866638){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\delta v_2$}}}%
+    \put(0.31997375,0.19933381){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$S_\delta()$}}}%
+    \put(0.26664479,0.28199353){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Gradient Descent: loop until convergence}}}%
+    \put(0.12665628,0.1020083){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Metric}}}%
+    \put(0.12665628,0.07534382){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\left(M\circ\phi_2, F\circ\phi_1\right)$}}}%
+    \put(0.31997375,0.09534218){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$S_\delta()$}}}%
+    \put(0.27331091,0.1020083){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\delta v_1$}}}%
+    \put(-0,0.1153403){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi_2$}}}%
+    \put(0.39996719,0.24199682){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Compose}}}%
+    \put(0.39996719,0.2020001){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\delta v_2\circ\phi_1^{-1}$}}}%
+    \put(0.50662511,0.2246649){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$S_\phi()$}}}%
+    \put(0.50662511,0.06467803){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$S_\phi()$}}}%
+    \put(0.39996719,0.09534218){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Compose}}}%
+    \put(0.39996719,0.05534546){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\delta v_1\circ\phi_2^{-1}$}}}%
+    \put(0.60661691,0.19533398){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Inversion}}}%
+    \put(0.60661691,0.1686695){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Method}}}%
+    \put(0.60661691,0.11534054){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Inversion}}}%
+    \put(0.60661691,0.08867606){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Method}}}%
+    \put(-0,0.04867918){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi_2^{-1}$}}}%
+    \put(0.8732617,0.1820019){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Compose}}}%
+    \put(0.8732617,0.10200846){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Compose}}}%
+    \put(0.8732617,0.1486713){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi_1\circ\phi_2^{-1}$}}}%
+    \put(0.8732617,0.06867786){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi_2\circ\phi_1^{-1}$}}}%
+    \put(0.95325514,0.17533578){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi$}}}%
+    \put(0.95325514,0.09534234){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\phi^{-1}$}}}%
+    \put(0.69994258,0.25532922){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Inversion}}}%
+    \put(0.69994258,0.22866458){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Method}}}%
+    \put(0.69994258,0.05534546){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Inversion}}}%
+    \put(0.69994258,0.02868098){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Method}}}%
+    \put(0.65327974,0.26866129){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$_\mathrm{init}$}}}%
+    \put(0.54662183,0.17533562){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$_\mathrm{init}$}}}%
+    \put(0.65327974,0.04201322){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$_\mathrm{init}$}}}%
+    \put(0.54662183,0.12200666){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$_\mathrm{init}$}}}%
+  \end{picture}%
+\endgroup%

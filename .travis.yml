@@ -1,0 +1,28 @@
+sudo: required
+dist: trusty
+
+language: cpp
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - clang
+  - gcc
+
+before_script:
+  - export OMP_NUM_THREADS=2
+  - echo $OMP_NUM_THREADS
+  # Out-of-source build
+  - cd ..
+  - mkdir SuperElastix-build
+  - cd SuperElastix-build
+
+script:
+  - cmake ../SuperElastix/SuperBuild
+  - make -j2
+
+after_success:
+  - cd SuperElastix-build
+  - ctest
