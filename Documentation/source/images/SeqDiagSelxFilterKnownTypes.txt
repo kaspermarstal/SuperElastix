@@ -1,0 +1,46 @@
+title Application embedding (compile-time known I/O)
+note left of cmd: Connect Reader/Writer and SetBlueprint \nin arbitrary order
+
+opt SetBlueprint
+  cmd->SelxFilter: SetBlueprint
+end
+opt Connect Reader
+  cmd->*Reader: create
+  note right of Reader: Reader template type <T> is known
+  Reader-> cmd: 
+  cmd->Reader: SetFilename
+  cmd->SelxFilter: SetInput (Reader->GetOuput())
+  Reader->SelxFilter: GetOuput
+end
+opt Connect Writer
+  cmd->*Writer: create
+  note right of Writer: Writer template type <T> is known
+  Writer->cmd: 
+  cmd->Writer: SetFilename
+  cmd->Writer: SetInput (SelxFilter->GetOuput<T>())
+  note right of Writer: Call with <T> forces the output \nto match the writer input type
+  Writer->SelxFilter: GetOuput<T>()
+  
+end
+note left of cmd: Update follows standard \n ITK pipeline ...
+cmd->Writer: Update 
+Writer->SelxFilter: RequestInfo, Update Inputs
+SelxFilter->Overlord: SetBlueprint
+SelxFilter->Overlord: Configure
+Overlord->*Source: create
+Source->SelxFilter: check if input data types match
+Overlord->*Sink: create
+Sink->SelxFilter: check if output data types match
+
+SelxFilter->Sink: RequestInfo, Update Inputs
+Sink->Source: RequestInfo, Update Inputs \n(via other components)
+Source->Reader:
+Reader->Reader: read data
+Reader->Source:
+Source->Sink: (perform algorithm)
+Sink->SelxFilter:
+SelxFilter->Writer:
+Writer->Writer: write data
+
+
+

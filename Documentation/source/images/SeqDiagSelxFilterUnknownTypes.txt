@@ -1,0 +1,48 @@
+title Commandline (compile-time unknown I/O)
+note left of cmd: Blueprint needs to be set first.\n This violates the standard ITK pipeline setup
+
+  cmd->SelxFilter: SetBlueprint
+
+note left of cmd: Connect Reader/Writer \nin arbitrary order
+opt Setup Reader
+  cmd->SelxFilter: GetInputReader
+  SelxFilter->Overlord: SetBlueprint
+  SelxFilter->Overlord: Configure
+  Overlord->*Source: create
+  SelxFilter->Overlord: GetInputReader
+  Overlord->Source: GetInputReader
+  Source->*Reader: create
+  note right of Reader: Reader is templated \naccording to Blueprint
+  Reader->cmd: return AnyReader (non-templated base type)
+  cmd->Reader: SetFilename
+  cmd->SelxFilter: SetInput (AnyReader->GetOuput())
+  Reader->SelxFilter: GetOuput
+end
+opt Setup Writer
+  cmd->SelxFilter: GetOutputWriter
+  SelxFilter->Overlord: (SetBlueprint)
+  SelxFilter->Overlord: Configure
+  Overlord->*Sink: create
+  SelxFilter->Overlord: GetOutputWriter
+  Overlord->Sink: GetOutputWriter
+  Sink->*Writer: create
+  note right of Writer: Writer is templated \naccording to Blueprint
+  Writer->cmd: return AnyWriter (non-templated base type)
+  cmd->Writer: SetFilename
+  cmd->Writer: SetInput (SelxFilter->GetOuput())
+  SelxFilter->Writer: GetOuput
+end
+note left of cmd: Update follows standard \n ITK pipeline ...
+cmd->Writer: Update 
+Writer->SelxFilter: RequestInfo, Update Inputs
+SelxFilter->Sink: RequestInfo, Update Inputs
+Sink->Source: RequestInfo, Update Inputs \n(via other components)
+Source->Reader:
+Reader->Reader: read data
+Reader->Source:
+Source->Sink: (perform algorithm)
+Sink->SelxFilter:
+SelxFilter->Writer:
+Writer->Writer: write data
+
+

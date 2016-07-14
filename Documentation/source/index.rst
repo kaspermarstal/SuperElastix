@@ -10,4 +10,5 @@ Contents:
 .. toctree:: 
     GettingStarted
     Usage
+    Development
     Dashboard
