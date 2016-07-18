@@ -55,10 +55,9 @@ In this guide we will use CMake to generate build files and the Visual Studio co
     - Press configure to bring up the compiler selection window.
     - Preferably, choose Visual Studio 12 2013 Win64 as the generator for the project. SuperElastix can only be compiled with Visual Studio 12 or newer, and if the OS is 64-bit that is also the prefered for the compiler. 
 
-3. Open Visual Studio, select File -> Open Project/Solution -> Open and choose :code:`SuperBuildSuperElastix` solution.
+3. Open Visual Studio, select File -> Open Project/Solution -> Open and choose :code:`SuperElastixSuperBuild` solution.
 
-
-4. Make sure "Release" build type is selected and build the :code:`ALL_BUILD` project. .
+4. Make sure "Release" build type is selected and build the :code:`ALL_BUILD` project.
 
 5. Right-click on :code:`ALL_BUILD` and click :code:`Build`.
 
