@@ -61,6 +61,7 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 4. Make sure "Release" build type is selected and build the :code:`ALL_BUILD` project. .
 
 5. Right-click on :code:`ALL_BUILD` and click :code:`Build`.
+    - When building in Visual Studio 2015 you will get a number of error messages during compilation of ITK. Just press the 'Ignore' button for all of them.
 
 6. The SuperBuildSuperElastix solution only shows each library as a project. To have a more detailed view of SuperElastix open the SuperElastix solution file  :code:`<build-path>\SuperElastix-build\SuperElastix.sln` in a new Visual Studio environment.
 
