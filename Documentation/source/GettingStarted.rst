@@ -14,7 +14,7 @@ The SuperElastix SuperBuld is a script that automatically downloads and installs
 
 ::
 
-    $ git clone https://github.com/kaspermarstal/SuperElastix
+    $ git clone https://github.com/SuperElastix/SuperElastix
     $ mkdir build
     $ cd build
     $ cmake ../SuperElastix/SuperBuild
@@ -46,14 +46,14 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 
 1. Setup directories.
     - Download and install `CMake GUI <http://www.cmake.org/download/>`_.
-    - :code:`git clone https://github.com/kaspermarstal/SuperElastix` into a source folder of your choice.
+    - :code:`git clone https://github.com/SuperElastix/SuperElastix` into a source folder of your choice.
     - Point the CMake source directory to the :code:`SuperElastix/SuperBuild` folder inside the source directory.
     - Point the CMake build directory to a clean directory. Note that Visual Studio may complain during the build if the path is longer than 50 characters. Make a build directory with a short name at the root of your harddrive to avoid any issues.
 
 
 2. Select compiler.
     - Press configure to bring up the compiler selection window.
-    - Preferably, choose Visual Studio 12 2013 Win64 as the generator for the project. SuperElastix can only be compiled with Visual Studio 12 or newer, and if the OS is 64-bit that is also the prefered for the compiler. 
+    - Preferably, choose Visual Studio 12 2013 Win64 as the generator for the project. SuperElastix can only be compiled with Visual Studio 12 or later, and if the OS is 64-bit that is also the prefered for the compiler. 
 
 3. Open Visual Studio, select File -> Open Project/Solution -> Open and choose :code:`SuperElastixSuperBuild` solution.
 
@@ -64,27 +64,33 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 
 6. The SuperBuildSuperElastix solution only shows each library as a project. To have a more detailed view of SuperElastix open the SuperElastix solution file  :code:`<build-path>\SuperElastix-build\SuperElastix.sln` in a new Visual Studio environment.
 
-7. The SuperElastix executable can be found in :code:`<build-path>\SuperElastix-build\bin\Release`
+7. Optionally, Unit Tests and example code can be run by right-clicking on :code:`RUN_TESTS` and clicking :code:`Project Only -> Build Only RUN_TESTS`. Alternatively, individual tests can be run by right-clicking on a specific selx<...>Test project and choosing :code:`Set as StartUp Project`.
 
-8. Unit Tests and example code can be run by right-clicking on :code:`RUN_TESTS` and clicking :code:`Project Only -> Build Only RUN_TESTS`. Alternatively, individual tests can be run by right-clicking on a specific selx<...>Test project and choosing :code:`Set as StartUp Project`.
+8. The SuperElastix commandline executable can be found in :code:`<build-path>\SuperElastixApplications-build\CommandlineProgram\Release`.
+
+
 
 Manually Building the Required Libraries
 ----------------------------------------
 Instead of letting the SuperBuild download and build the required libraries manually build libraries can be used as well.
 The following approach allows us to use a system version of ITK or our own version of elastix. 
 
-1. Install ITK. 
+1. Build ITK. 
     - Clone ITK from `github.com/InsightSoftwareConsortium/ITK <https://github.com/InsightSoftwareConsortium/ITK>`_.
     - Configure CMake. Set the following CMake variables: BUILD_SHARED_LIBS=OFF, ITK_USE_REVIEW=ON, ITK_WRAP_*=OFF.
     - Compile ITK. Make sure to note the build settings, e.g. Release x64.
-4. Build elastix. 
+
+2. Build Boost
+	
+3. Build elastix. 
     - Clone elastix from `github.com/kaspermarstal/elastix <https://github.com/kaspermarstal/elastix>`_.
     - Set ITK_DIR to the location of the ITK build directory
     - Configure CMake. Set the following CMake variables: BUILD_EXECUTABLE=OFF, USE_KNNGraphAlphaMutualInformationMetric=OFF 
     - Set appropriate ELASTIX_IMAGE_2/3/4D_PIXELTYPES and any components that you might require.
     - If you are developing your own elastix components, make sure they are properly registered by the elastix build system.
     - Compile elastix. Make sure to configure the build settings exactly the same as ITK e.g. Release x64.
-5. Build SuperElastix. 
-    - Clone SuperElastix from `github.com/kaspermarstal/SuperElastix <https://github.com/kaspermarstal/SuperElastix>`_.
+
+4. Build SuperElastix. 
+    - Clone SuperElastix from `github.com/SuperElastix/SuperElastix <https://github.com/SuperElastix/SuperElastix>`_.
     - Configure CMake. Point ITK_DIR to the location of the ITK build directory and ELASTIX_DIR to the location of the elastix build directory.
     - Build SuperElastix. Make sure to configure the build settings exactly the same as ITK e.g. Release x64.
