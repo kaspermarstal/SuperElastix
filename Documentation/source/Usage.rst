@@ -10,8 +10,8 @@ Commandline tool
 
 The SuperElastix commandline tool can be found at:
   
-- Windows: :code:`<build-path>\SuperElastixApplications-build\CommandlineProgram\Release` 
-- Linux: :code:`<build-path>/SuperElastixApplications-build/CommandlineProgram/` 
+- Windows: :code:`<build-path>\Applications-build\CommandLineInterface\[Release|Debug]\`
+- Linux: :code:`<build-path>/Applications-build/CommandLineInterface/` 
 
 Demo Experiments
 ----------------
@@ -20,12 +20,12 @@ To run the demo experiments SuperElastix needs to be installed:
 
 - Windows:
 
-  - open :code:`<build-path>\SuperElastixApplications-build\SuperElastixApplications.sln`
+  - open :code:`<build-path>\Applications-build\SuperElastixApplications.sln`
   - in project solution explorer right-click on InstallDemo -> Project Only -> Build Only InstallDemo
   
 - Linux: 
 
-  - change dir to :code:`<build-path>/SuperElastixApplications-build/`
+  - change dir to :code:`<build-path>/Applications-build/`
   - :code:`make InstallDemo`
 
 By building the :code:`InstallDemo` target the SuperElastix executable, image data, configuration files and commandline scripts will be copied to the :code:`<INSTALLDEMO_PREFIX>` directory. The :code:`<INSTALLDEMO_PREFIX>` can be set by CMake and defaults to :code:`<build-path>/SuperElastixApplications-build/Demo`
