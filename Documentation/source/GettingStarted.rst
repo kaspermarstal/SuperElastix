@@ -66,7 +66,7 @@ In this guide we will use CMake to generate build files and the Visual Studio co
 
 7. Optionally, Unit Tests and example code can be run by right-clicking on :code:`RUN_TESTS` and clicking :code:`Project Only -> Build Only RUN_TESTS`. Alternatively, individual tests can be run by right-clicking on a specific selx<...>Test project and choosing :code:`Set as StartUp Project`.
 
-8. The SuperElastix commandline executable can be found in :code:`<build-path>\SuperElastixApplications-build\CommandlineProgram\Release`.
+8. The SuperElastix commandline executable can be found in :code:`<build-path>\Applications-build\CommandLineInterface\Release`.
 
 
 
