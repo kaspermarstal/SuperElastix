@@ -70,7 +70,7 @@ public:
     // register the components we want to have available in SuperElastix
     superElastixFilter = SuperElastixFilterCustomComponents< RegisterComponents >::New();
     dataManager = DataManagerType::New();
-    logger = Logger::New();
+    logger = std::make_shared<Logger>();
     logger->AddStream("cout", std::cout);
     logger->SetLogLevel(LogLevel::TRC);
   }
@@ -86,7 +86,7 @@ public:
   }
 
   BlueprintPointer blueprint;
-  Logger::Pointer logger;
+  std::shared_ptr<Logger> logger;
   SuperElastixFilterBase::Pointer superElastixFilter;
   DataManagerType::Pointer dataManager;
 };

@@ -35,7 +35,7 @@
 #include <string>
 
 #include "selxBlueprint.h"
-#include "selxLoggerImpl.h"
+#include "selxLogger.h"
 
 namespace selx
 {
@@ -95,7 +95,7 @@ public:
   // TODO: remove this argumentless constructor
   BlueprintImpl();
 
-  BlueprintImpl( LoggerImpl & loggerImpl);
+  BlueprintImpl( std::shared_ptr<Logger> logger);
 
 
   bool SetComponent( ComponentNameType, ParameterMapType parameterMap );
@@ -129,7 +129,7 @@ public:
 
   void MergeFromFile(const std::string & filename);
 
-  void SetLoggerImpl( LoggerImpl & loggerImpl );
+  void SetLogger( std::shared_ptr<Logger> logger );
 
 private:
 
@@ -151,7 +151,7 @@ private:
 
   GraphType m_Graph;
 
-  LoggerImpl * m_LoggerImpl;
+  std::shared_ptr<Logger> m_Logger;
 };
 } // namespace selx
 

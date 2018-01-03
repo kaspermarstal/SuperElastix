@@ -1,7 +1,6 @@
-Remarks:
-
 Blueprint (and related classes).
 >> See also code changes.
+====================================================================================================
 
 * m_Blueprint -> m_Implementation or m_BlueprintImplementation
 * Use std::make_unique instead of new
@@ -54,3 +53,46 @@ Blueprint (and related classes).
 * Note that when you use EXPECT_NO_THROW, the test will continue after that line. If that does not
   make sense better use ASSERT_NO_THROW, which will stop the test in case of a throw.
 * Do you have any policy about unit test coverage? Not all code of the Blueprint class seems to be covered.
+
+Logger (and related classes).
+>> See also code changes.
+====================================================================================================
+* Nice logger! I like the formatting and async options.
+* Do I understand correctly that when I want to redirect SuperElastix logs to our own logger, I need
+  to create custom ostreams, instantiate a logger using these streams and set this logger in the SuperElastixFilter?
+* Add comments to class and methods.
+* Pimpl: I think there are three approaches when using Pimpl. You can use it as a data container in which you
+  put all member variables you want to hide from the header file of the pimpled class. E.g. to not need to
+  include spdlog headers in the Logger.h file. Advantage: no redirection (doubling) of methods needed. You
+  directly use the pimpl.members in you pimpled.methods.
+  or
+  You can put all members variables and methods in the implementation object. This is what you do now.
+  Advantage. Pimpl object can be better reused. However, you might wonder if you really want that.
+  or
+  You use some kind of hybrid approach. You use option 1 (data container) and add only those methods to
+  this object that do use the data in this container. All other methods you put directly in the pimpled
+  class.
+  ---
+  Personally, I think I would use option 1 in the first place, but it is a bit a matter of taste.
+* Passing primary types by const& does not really make sense. You can just pass by value or const value.
+  e.g. const bool& -> const bool
+* Why not merge:
+  - void SetAsyncMode();
+  - void SetAsyncQueueBlockOnOverflow();
+  - void SetAsyncQueueDiscardOnOverflow();
+  - void SetAsyncQueueSize( const size_t queueSize );
+  Into one SetAsyncMode method with two arquments?
+* LoggerImpl& GetLoggerImpl() -> ouch, this seems to break encapsulation.
+* Non-primitive types like vectors and maps do not need to be explicitly initialized. Default constructor-arguments-as-f
+  will be called already.
+* enum classes are basically ints (or longs), you can just pass them by value.
+* Does the logger really need to be an itk DataObject? Why not just make it a normal type (so no inheritance).
+* m_LoggerImpl(&(Logger::New()->GetLoggerImpl())) looks really scary. New() will return a smart pointer.
+  My feeling is that it will be destructed after this line of code, which makes the pointer to the implementation dangling.
+  Why not keep a shared_ptr to the Logger itself? I did an update in the code. The forwarding of the Log method from the Logger
+  its implementation is not ideal yet.
+* Cleaner to move the operator<< for the vector and map types to a separate file by using their non member versions.
+  They have nothing to do with the logger itself. You might need to put them in namespace std so the compiler
+  can use A(rgument)D(ependent)L(ookup). Furthermore the syntax logger << some_map is really confusing. You would assume that
+  you stream something in the logger, but it is just a conversion. I would use to_string in the selx namespace,
+  similar to to_string in std (which cannot be overloaded). I changed the code, but only did not move them to a separate file yet.

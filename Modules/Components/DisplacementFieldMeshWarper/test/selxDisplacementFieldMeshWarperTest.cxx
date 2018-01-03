@@ -111,11 +111,11 @@ TEST_F( DisplacementFieldMeshWarperComponentTest, SinkAndSource )
   displacementField->SetPixel(index21, displacement00);
   displacementField->SetPixel(index22, displacementminus11);
 
-  Logger::Pointer logger = Logger::New();
+  auto logger = std::make_shared<Logger>();
   logger->AddStream( "cout", std::cout );
   logger->SetLogLevel( LogLevel::TRC );
 
-  BlueprintPointer blueprint = Blueprint::New();
+  auto blueprint = Blueprint::New();
   using ParameterMapType = Blueprint::ParameterMapType;
 
   ParameterMapType displacementFieldSourceParameters;

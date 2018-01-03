@@ -68,7 +68,6 @@ public:
   using RegisterComponents = list_append< CustomComponents, DefaultComponents >;
 
   typedef Blueprint::Pointer BlueprintPointer;
-  typedef Logger::Pointer LoggerPointer;
 
   typedef itk::Mesh< float, 2 >           MeshType;
   typedef itk::MeshFileReader< MeshType > MeshReaderType;
@@ -78,7 +77,7 @@ public:
   virtual void SetUp()
   {
     dataManager = DataManagerType::New();
-    logger = Logger::New();
+    logger = std::make_shared<Logger>();
     logger->SetLogLevel( LogLevel::DBG );
     logger->AddStream( "cout", std::cout );
   }
@@ -98,7 +97,7 @@ public:
   // Data manager provides the paths to the input and output data for unit tests
   DataManagerType::Pointer dataManager;
   // Logger
-  LoggerPointer logger;
+  std::shared_ptr<Logger> logger;
 
 };
 

@@ -36,8 +36,6 @@ class LoggerImpl
 
 public:
 
-  typedef spdlog::async_overflow_policy AsyncQueueOverflowPolicyType;
-
   LoggerImpl();
   ~LoggerImpl();
 
@@ -45,15 +43,12 @@ public:
   void SetPattern( const std::string& pattern );
 
   void SetSyncMode();
-  void SetAsyncMode();
-  void SetAsyncQueueBlockOnOverflow(void);
-  void SetAsyncQueueDiscardOnOverflow(void);
-  void SetAsyncQueueSize( const size_t& queueSize );
+  void SetAsyncMode( const bool block_on_overflow, const size_t queueSize );
   void AsyncQueueFlush();
 
-  void AddStream( const std::string& identifier, std::ostream& stream, const bool& forceFlush = false );
+  void AddStream( const std::string& identifier, std::ostream& stream, const bool forceFlush = false );
   void RemoveStream( const std::string& identifier );
-  void RemoveAllStreams( void );
+  void RemoveAllStreams();
 
   void Log( const LogLevel& level, const std::string& message );
 
@@ -61,69 +56,70 @@ public:
   void
   Log( const LogLevel& level, const std::string& fmt, const Args& ... args )
   {
-  	for( const auto& identifierAndLogger : this->m_Loggers )
-  	{
+    for( const auto& identifierAndLogger : this->m_Loggers )
+    {
       identifierAndLogger.second->log( this->ToSpdLogLevel( level ), fmt.c_str(), args ... );
-  	}
+    }
   }
 
-  // Stream std:vector to string
-  // TODO: Use std::copy_n to print [n1, n2, ... , n-1, n] if vector is long
-  template < typename T >
-  std::string operator<<( const std::vector< T >& v ) {
-    std::ostringstream out;
-    if( !v.empty() ) {
-      if( v.size() > 1 ) out << '[';
-      std::copy( v.begin(), v.end(), std::ostream_iterator< T >( out, ", " ) );
-      out << "\b\b";
-      if( v.size() > 1 ) out << "]";
-    }
-    return out.str();
-  }
-
-  // Stream std::map< T, T > to string
-  template < typename T >
-  std::string operator<<( const std::map< T, T >& m ) {
-    std::ostringstream out;
-    if( !m.empty() ) {
-      out << "{";
-      for( const auto& item : m )
-      {
-        out << item.first << ": " << item.second << ", ";
-      }
-      out << "\b\b}";
-    }
-    return out.str();
-  }
-
-  // Stream std::map< T, std::vector< T > > to string
-  template < typename T >
-  std::string operator<<( const std::map< T, std::vector< T > >& m ) {
-    std::ostringstream out;
-    if( !m.empty() ) {
-      out << "{";
-      for( const auto& item : m )
-      {
-        out << item.first << ": " << this << item.second << ", ";
-      }
-      out << "\b\b}";
-    }
-    return out.str();
-  }
 
 private:
 
   // Spdlog configuration
   spdlog::level::level_enum ToSpdLogLevel( const LogLevel& level );
-  size_t m_AsyncQueueSize;
-  AsyncQueueOverflowPolicyType m_AsyncQueueOverflowPolicy;
 
   // Logger container
-  typedef std::shared_ptr< spdlog::logger > LoggerType;
-  typedef std::map< std::string, LoggerType > LoggerVectorType;
-	LoggerVectorType m_Loggers;
+  using LoggerType = std::shared_ptr< spdlog::logger >;
+  using LoggerVectorType = std::map< std::string, LoggerType >;
+  LoggerVectorType m_Loggers;
 
 };
+
+
+// Convert std:vector to string
+// TODO: Use std::copy_n to print [n1, n2, ... , n-1, n] if vector is long
+template < typename T >
+std::string to_string( const std::vector< T >& v ) {
+  std::stringstream out;
+  if (!v.empty()) {
+    if (v.size() > 1) out << '[';
+    std::copy(v.begin(), v.end(), std::ostream_iterator< T >(out, ", "));
+    out << "\b\b";
+    if (v.size() > 1) out << "]";
+  }
+  return out.str();
+}
+
+
+// Convert std::map< T, T > to string
+template < typename T >
+std::string to_string( const std::map< T, T >& m ) {
+  std::stringstream out;
+  if (!m.empty()) {
+    out << "{";
+    for (const auto& item : m) {
+      out << item.first << ": " << item.second << ", ";
+    }
+    out << "\b\b}";
+  }
+  return out.str();
+}
+
+
+// Convert std::map< T, std::vector< T > > to string
+template < typename T >
+std::string to_string( const std::map< T, std::vector< T > >& m ) {
+  std::stringstream out;
+  if (!m.empty()) {
+    out << "{";
+    for (const auto& item : m) {
+      out << item.first << ": " << this << item.second << ", ";
+    }
+    out << "\b\b}";
+  }
+  return out.str();
+}
+
 
 } // namespace
 

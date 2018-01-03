@@ -20,10 +20,8 @@
 #ifndef selxLoggerController_h
 #define selxLoggerController_h
 
-#include "itkDataObject.h"
-#include "itkObjectFactory.h"
-
 #include <memory>  // For unique_ptr.
+#include <string>
 
 namespace selx
 {
@@ -41,50 +39,40 @@ enum class LogLevel
 
 class LoggerImpl;
 
-class Logger : public itk::DataObject
+class Logger
 {
 public:
 
-  /** Standard ITK typedefs. */
-  typedef Logger                          Self;
-  typedef itk::ProcessObject              Superclass;
-  typedef itk::SmartPointer< Self >       Pointer;
-  typedef itk::SmartPointer< const Self > ConstPointer;
-
-  /** Method for creation through the object factory. */
-  itkNewMacro( Self );
-
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( Self, itk::DataObject );
-
   Logger();
 
-  void SetLogLevel( const LogLevel& level );
+  // We need a destructor which is defined the cxx file, because we use a unique_ptr to an
+  // incomplete LoggerImpl.
+  ~Logger();
+
+  void SetLogLevel( const LogLevel level );
   void SetPattern( const std::string& pattern );
 
   void SetSyncMode();
-  void SetAsyncMode();
-  void SetAsyncQueueBlockOnOverflow(void);
-  void SetAsyncQueueDiscardOnOverflow(void);
-  void SetAsyncQueueSize( const size_t& queueSize );
+  void SetAsyncMode( const bool block_on_overflow = true, const size_t queueSize = 262144);
   void AsyncQueueFlush();
 
   // TODO: AddStreamWithColors, AddRotatingFileBySize, AddRotatingFileByTime
-  void AddStream( const std::string& identifier, std::ostream& stream, const bool& force_flush = false );
+  void AddStream( const std::string& identifier, std::ostream& stream, const bool force_flush = false );
   void RemoveStream( const std::string& identifier );
-  void RemoveAllStreams( void );
+  void RemoveAllStreams();
 
-  void Log( const LogLevel& level, const std::string& message );
+  void Log( const LogLevel level, const std::string& message );
+  void Log( const LogLevel level, const std::string& message, const std::string& argument );
 
-  LoggerImpl& GetLoggerImpl( void );
+  LoggerImpl& GetLoggerImpl();
 
 
 private:
 
-  typedef std::unique_ptr< LoggerImpl > LoggerImplPointer;
-  LoggerImplPointer m_LoggerImpl;
+  std::unique_ptr< LoggerImpl > m_LoggerImpl;
 
 };
+
 } // namespace
 
 #endif // selxLoggerController_h

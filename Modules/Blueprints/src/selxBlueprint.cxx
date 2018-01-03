@@ -27,13 +27,13 @@ Blueprint
 ::Blueprint()
 {
   // Create default logger which redirects to std::cout
-  this->m_Logger = Logger::New();
+  this->m_Logger = std::make_shared<Logger>();
   //TODO: cannot have independent loggers redirecting to cout. 
   //this->m_Logger->AddStream("cout", std::cout);
   //TODO: this seems to affect other instantiated loggers too.
   //this->m_Logger->SetLogLevel(selx::LogLevel::INF);
 
-  this->m_Implementation = std::make_unique<BlueprintImpl>( this->m_Logger->GetLoggerImpl() );
+  this->m_Implementation = std::make_unique<BlueprintImpl>( this->m_Logger );
 }
 
 
@@ -161,10 +161,10 @@ Blueprint
 
 void
 Blueprint
-::SetLogger( Logger::Pointer logger )
+::SetLogger( std::shared_ptr<Logger> logger )
 {
   this->m_Logger = logger;
-  this->m_Implementation->SetLoggerImpl( logger->GetLoggerImpl() );
+  this->m_Implementation->SetLogger( logger );
 }
 
 

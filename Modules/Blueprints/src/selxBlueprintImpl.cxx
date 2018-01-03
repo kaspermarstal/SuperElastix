@@ -100,11 +100,11 @@ make_edge_label_writer( ParameterMapType p )
 }
 
 // TODO: remove this argumentless constructor
-BlueprintImpl::BlueprintImpl() : m_LoggerImpl(&(Logger::New()->GetLoggerImpl()))
+BlueprintImpl::BlueprintImpl() : m_Logger(std::make_shared<Logger>())
 {
 }
 
-BlueprintImpl::BlueprintImpl( LoggerImpl & loggerImpl ) : m_LoggerImpl(&loggerImpl)
+BlueprintImpl::BlueprintImpl( std::shared_ptr<Logger> logger ) : m_Logger(logger)
 {
 }
 
@@ -442,30 +442,30 @@ BlueprintImpl::MergeFromFile(const std::string & fileNameString)
 {
   PathType fileName(fileNameString);
 
-  this->m_LoggerImpl->Log(LogLevel::INF, "Loading {0} ... ", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Loading {0} ... ", fileName.string());
   auto propertyTree = ReadPropertyTree(fileName);
-  this->m_LoggerImpl->Log(LogLevel::INF, "Loading {0} ... Done", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Loading {0} ... Done", fileName.string());
 
-  this->m_LoggerImpl->Log(LogLevel::INF, "Checking {0} for include files ... ", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Checking {0} for include files ... ", fileName.string());
   auto includesList = FindIncludes(propertyTree);
 
   if (includesList.size() > 0)
   {
     for (auto const & includePath : includesList)
     {
-      this->m_LoggerImpl->Log(LogLevel::INF, "Including file {0} ... ", includePath);
+      this->m_Logger->Log(LogLevel::INF, "Including file {0} ... ", includePath.string());
       this->MergeFromFile(includePath.string());
     }
   }
-  this->m_LoggerImpl->Log(LogLevel::INF, "Checking {0} for include files ... done", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Checking {0} for include files ... done", fileName.string());
   this->MergeProperties(propertyTree);
   return;
 }
 
 void
-BlueprintImpl::SetLoggerImpl( LoggerImpl & loggerImpl )
+BlueprintImpl::SetLogger( std::shared_ptr<Logger> logger )
 {
-  this->m_LoggerImpl = &loggerImpl;
+  this->m_Logger = logger;
 }
 
 BlueprintImpl::PropertyTreeType
@@ -543,7 +543,7 @@ BlueprintImpl::FromPropertyTree(const PropertyTreeType & pt)
     std::string connectionName = v.second.data();
     if (connectionName != "")
     {
-      this->m_LoggerImpl->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
+      this->m_Logger->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
     }
     std::string      outName;
     std::string      inName;
@@ -565,7 +565,7 @@ BlueprintImpl::FromPropertyTree(const PropertyTreeType & pt)
       }
       else if (connectionKey == "Name")
       {
-        this->m_LoggerImpl->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
+        this->m_Logger->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
         continue;
       }
       else
@@ -620,7 +620,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
           if (ownValues.size() != otherValues.size())
           {
             // No, based on the number of values we see that it is different. Blueprints cannot be Composed
-            this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+            this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
             throw std::invalid_argument("Merging blueprints failed : Component properties cannot be redefined");
           }
           else
@@ -632,7 +632,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
               if (*otherValue != *ownValue)
               {
                 // No, at least one value is different. Blueprints cannot be Composed
-                this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+                this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
                 throw std::invalid_argument("Merging blueprints failed: Component properties cannot be redefined");
               }
             }
@@ -659,7 +659,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
     std::string connectionName = v.second.data();
     if (connectionName != "")
     {
-      this->m_LoggerImpl->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
+      this->m_Logger->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
     }
     std::string      outName;
     std::string      inName;
@@ -681,7 +681,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
       }
       else if (connectionKey == "Name")
       {
-        this->m_LoggerImpl->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
+        this->m_Logger->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
         continue;
       }
       else
@@ -709,7 +709,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
           if (ownValues.size() != otherValues.size())
           {
             // No, based on the number of values we see that it is different. Blueprints cannot be Composed
-            this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+            this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
             throw std::invalid_argument("Merging blueprints failed: Component properties cannot be redefined");
           }
           else
@@ -721,7 +721,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
               if (*otherValue != *ownValue)
               {
                 // No, at least one value is different. Blueprints cannot be Composed
-                this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+                this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
                 throw std::invalid_argument("Merging blueprints failed: Component properties cannot be redefined");
               }
             }

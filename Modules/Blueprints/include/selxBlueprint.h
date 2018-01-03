@@ -109,12 +109,12 @@ public:
   void MergeFromFile(const std::string& filename);
 
   //! Set a custom logger.
-  void SetLogger( Logger::Pointer logger );
+  void SetLogger( std::shared_ptr<Logger> logger );
 
 private:
 
   BlueprintImplPointer m_Implementation;
-  Logger::Pointer m_Logger;
+  std::shared_ptr<Logger> m_Logger;
 };
 }
 

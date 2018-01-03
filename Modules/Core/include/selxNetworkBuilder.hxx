@@ -88,7 +88,7 @@ NetworkBuilder< ComponentList >::Configure()
 
   if( nonUniqueComponentNames.size() > 0 )
   {
-    this->m_Logger.Log( LogLevel::CRT, ( this->m_Logger << nonUniqueComponentNames ) + " need more criteria." );
+    this->m_Logger.Log( LogLevel::CRT, ( selx::to_string( nonUniqueComponentNames ) ) + " need more criteria." );
     return false;
   }
 
@@ -155,7 +155,7 @@ NetworkBuilder< ComponentList >::ApplyComponentConfiguration()
                           componentName,
                           currentComponentSelector->NumberOfComponents(),
                           criterion.first,
-                          this->m_Logger << criterion.second);
+                          selx::to_string( criterion.second ) );
     }
 
     if( currentComponentSelector->NumberOfComponents() == 0 )
@@ -208,7 +208,7 @@ NetworkBuilder< ComponentList >::ApplyConnectionConfiguration()
                             "{0} can connect to {1} via {2}.",
                             providingComponentName,
                             acceptingComponentName,
-                            this->m_Logger << interfaceCriteria );
+                            selx::to_string( interfaceCriteria ) );
       }
 
       if( this->m_ComponentSelectorContainer[ acceptingComponentName ]->NumberOfComponents() == 0 )
