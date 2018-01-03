@@ -139,7 +139,7 @@ TEST_F( BlueprintTest, CopyConstuctor )
   ASSERT_NO_THROW( clonedComponent0 = clonedBaseBlueprint->GetComponent( "Component0" ) );
 
   BlueprintImpl::ParameterMapType component1;
-  ASSERT_NO_THROW( component1 = baseBlueprint->GetComponent( "Component1" ), std::runtime_error );
+  ASSERT_THROW( component1 = baseBlueprint->GetComponent( "Component1" ), std::runtime_error );
 }
 
 TEST_F( BlueprintTest, Compose )
