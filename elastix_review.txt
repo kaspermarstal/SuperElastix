@@ -1,0 +1,56 @@
+Remarks:
+
+Blueprint (and related classes).
+>> See also code changes.
+
+* m_Blueprint -> m_Implementation or m_BlueprintImplementation
+* Use std::make_unique instead of new
+* Why using void as argument for methods without arguments? Maybe ITK style?
+* Minimize includes in .h files. Try to move them as much as possible to .cxx file.
+* Use more auto?
+  e.g.
+    OutputIteratorPairType outputIteratorPair = boost::out_edges( this->m_Graph.vertex( name ), this->m_Graph );
+    auto outputIteratorPair = boost::out_edges( this->m_Graph.vertex( name ), this->m_Graph );
+  Potentially you have to typedef less, which makes header files cleaner and also decreases the nead to include these
+  files just to use a typedef.
+* for readability consider using type aliases instead of typedefs
+
+  typedef std::string                                      ParameterKeyType;
+  typedef std::vector< std::string >                       ParameterValueType;
+  typedef std::map< ParameterKeyType, ParameterValueType > ParameterMapType;
+  typedef std::string                                      ComponentNameType;
+  typedef std::vector< ComponentNameType >                 ComponentNamesType;
+
+  vs.
+
+  using ParameterKeyType = std::string;
+  using ParameterValueType = std::vector< std::string >;
+  using ParameterMapType = std::map< ParameterKeyType, ParameterValueType >;
+  using ComponentNameType = std::string;
+  using ComponentNamesType = std::vector< ComponentNameType >;
+* elastix and transformix are now linked against all test executables.
+  Try to link as minimal as possible.
+* I am getting quite some warnings when building in VS2015 update 3. I would try to eliminate these. Important warnings
+  get lost in the bulk this way.
+* GetBlueprintImpl -> ouch, this seems to break encapsulation. It would be best to only use the interface of Blueprint.
+  The idea of pimpl is to hide the implementation (from the header file).
+* Add class comment to Blueprint
+* Too much parameter copying going on. Arguments are better passed by const&. Except when you need a copy anyway.
+* Using names that start with an underscore: _name, etc, are a bit dangerous. Although they are allowed as arguments I would not use them.
+  For the member initialization list you can just do name(name); this is well-defined.
+  See https://stackoverflow.com/questions/6185020/initializing-member-variables-using-the-same-name-for-constructor-arguments-as-f.
+* 'inline' specifier is redundant on a function which is a template or has template arguments.
+* I am not sure if you thought about this well already, but you I notice that quite some exceptions are used.
+  At Quantib we always use these rules:
+  - Possible programming errors -> precondition on function (so no exceptions)
+  - Exceptions -> only for really exceptional stuff, like IO errors. Often related to external stuff
+    you cannot control yourself.
+  E.g. for the GetComponent method the BluePrintImpl I would probably not use exceptions, but just
+  document with the declaration that the component should exist. The programmer can optionally use
+  ComponentExists to check before getting the component.
+  Anyway, your error handling seems to be a bit of mix. In some cases an exception is thrown, in other
+  a bool is returned. If you want to handle these kind of cases a bit more transparently, you can also
+  consider using boost/std::optional for the GetComponent method.
+* Note that when you use EXPECT_NO_THROW, the test will continue after that line. If that does not
+  make sense better use ASSERT_NO_THROW, which will stop the test in case of a throw.
+* Do you have any policy about unit test coverage? Not all code of the Blueprint class seems to be covered.

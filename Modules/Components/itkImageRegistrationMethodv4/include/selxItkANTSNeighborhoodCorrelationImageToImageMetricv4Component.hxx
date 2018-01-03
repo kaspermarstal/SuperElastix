@@ -80,7 +80,7 @@ ItkANTSNeighborhoodCorrelationImageToImageMetricv4Component< Dimensionality, TPi
         this->m_theItkFilter->SetRadius( radius );
         return true;
       }
-      catch( itk::ExceptionObject & err )
+      catch( itk::ExceptionObject & )
       {
         //TODO log the error message?
         return false;

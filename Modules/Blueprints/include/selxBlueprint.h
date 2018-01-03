@@ -39,10 +39,10 @@ class Blueprint : public itk::DataObject
 public:
 
   /** Standard ITK typedefs. */
-  typedef Blueprint             Self;
-  typedef itk::ProcessObject              Superclass;
-  typedef itk::SmartPointer< Self >       Pointer;
-  typedef itk::SmartPointer< const Self > ConstPointer;
+  using Self = Blueprint;
+  using Superclass = itk::ProcessObject;
+  using Pointer = itk::SmartPointer< Self >;
+  using ConstPointer = itk::SmartPointer< const Self >;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -50,62 +50,70 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro( Self, itk::DataObject );
 
-  typedef std::string                                      ParameterKeyType;
-  typedef std::vector< std::string >                       ParameterValueType;
-  typedef std::map< ParameterKeyType, ParameterValueType > ParameterMapType;
-  typedef std::string                                      ComponentNameType;
-  typedef std::vector< ComponentNameType >                 ComponentNamesType;
+  using ParameterKeyType = std::string;
+  using ParameterValueType = std::vector< std::string >;
+  using ParameterMapType = std::map< ParameterKeyType, ParameterValueType >;
+  using ComponentNameType = std::string;
+  using ComponentNamesType = std::vector< ComponentNameType >;
 
-  /* m_Blueprint is initialized in the default constructor */
+  /* m_Implementation is initialized in the default constructor */
   Blueprint();
 
   /** The actual blueprint is a pimpled member variable */
   typedef std::unique_ptr< BlueprintImpl > BlueprintImplPointer;
 
-  const BlueprintImpl & GetBlueprintImpl( void ) const; 
+  const BlueprintImpl & GetBlueprintImpl() const; 
 
-  bool SetComponent( ComponentNameType, ParameterMapType parameterMap );
+  // Adds component to blueprint or replaces it if already existing. Returns if connection was succesfully established.
+  bool SetComponent( const ComponentNameType&, const ParameterMapType& parameterMap );
 
-  ParameterMapType GetComponent( ComponentNameType componentName ) const;
+  // Adds component to blueprint or replaces it if already existing.
+  ParameterMapType GetComponent( const ComponentNameType& componentName ) const;
 
-  bool DeleteComponent( ComponentNameType componentName );
+  // Deletes component with given name from blueprint.
+  bool DeleteComponent( const ComponentNameType& componentName );
 
-  bool ComponentExists( ComponentNameType componentName ) const;
+  // Returns if component with given name exists.
+  bool ComponentExists( const ComponentNameType& componentName ) const;
 
   // Returns a vector of the all Component names in the graph.
-  ComponentNamesType GetComponentNames( void ) const;
+  ComponentNamesType GetComponentNames() const;
 
-  bool SetConnection( ComponentNameType upstream, ComponentNameType downstream, ParameterMapType parameterMap );
+  // Adds a connection between upstream and downstream components with given parameters.
+  // If connection already exists, existing parameters will be replaced with given parameters.
+  // Returns if connection was succesfully added.
+  bool SetConnection( const ComponentNameType& upstream, const ComponentNameType& downstream, const ParameterMapType& parameterMap );
 
-  ParameterMapType GetConnection( ComponentNameType upstream, ComponentNameType downstream ) const;
+  // Returns parameters for connection between upstream and downstream.
+  ParameterMapType GetConnection( const ComponentNameType& upstream, const ComponentNameType& downstream ) const;
 
-  bool DeleteConnection( ComponentNameType upstream, ComponentNameType downstream );
+  // Delete connection between upstream and downstream.
+  bool DeleteConnection( const ComponentNameType& upstream, const ComponentNameType& downstream );
 
-  bool ConnectionExists( ComponentNameType upstream, ComponentNameType downstream ) const;
-
-  //std::unique_ptr<BlueprintImpl> Clone(BlueprintImpl const &other );
+  // Returns if a connections exists between upstream and downstream.
+  bool ConnectionExists( const ComponentNameType& upstream, const ComponentNameType& downstream ) const;
 
   // "functional" composition of blueprints is done by adding settings of other to this blueprint. Redefining/overwriting properties is not allowed and returns false.
-  bool ComposeWith( Blueprint::ConstPointer other );
+  bool ComposeWith( ConstPointer other );
 
   // Returns a vector of the Component names at the incoming direction
-  ComponentNamesType GetInputNames( const ComponentNameType name ) const;
+  ComponentNamesType GetInputNames( const ComponentNameType& name ) const;
 
   // Returns a vector of the Component names at the outgoing direction
-  ComponentNamesType GetOutputNames( const ComponentNameType name ) const;
+  ComponentNamesType GetOutputNames( const ComponentNameType& name ) const;
 
   // Write graphviz dot file
-  void Write( const std::string filename );
+  void Write( const std::string& filename );
 
-  // Read json or XML file
-  //void FromFile(const std::string& filename);
-
+  //! ..??..
   void MergeFromFile(const std::string& filename);
 
+  //! Set a custom logger.
   void SetLogger( Logger::Pointer logger );
+
 private:
 
-  BlueprintImplPointer m_Blueprint;
+  BlueprintImplPointer m_Implementation;
   Logger::Pointer m_Logger;
 };
 }

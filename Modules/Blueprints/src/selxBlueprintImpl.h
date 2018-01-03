@@ -30,16 +30,9 @@
 
 // for FromFile and MergeFromFile
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/info_parser.hpp>
-#include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
 
 #include <string>
-#include <iostream>
-#include <boost/algorithm/string.hpp>
-
 
 #include "selxBlueprint.h"
 #include "selxLoggerImpl.h"
