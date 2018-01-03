@@ -24,7 +24,7 @@ namespace selx
 {
 
 LoggerImpl
-::LoggerImpl() : m_Loggers(), m_AsyncQueueSize( 262144 ), m_AsyncQueueOverflowPolicy( spdlog::async_overflow_policy::block_retry )
+::LoggerImpl()
 {
   this->SetSyncMode();
   this->SetPattern( "[%Y-%m-%d %H:%M:%S.%f] [thread %t] [%l] %v" );
@@ -55,7 +55,9 @@ LoggerImpl
     case LogLevel::OFF:
       return spdlog::level::level_enum::off;
     default:
-      itkGenericExceptionMacro( "Invalid log level." );
+      // Should not happen.
+      return spdlog::level::level_enum::off;
+      //itkGenericExceptionMacro( "Invalid log level." );
   }
 }
 
@@ -86,35 +88,17 @@ LoggerImpl
 
 void
 LoggerImpl
-::SetAsyncMode()
+::SetAsyncMode( const bool block_on_overflow, const size_t queueSize )
 {
-  spdlog::set_async_mode(this->m_AsyncQueueSize, this->m_AsyncQueueOverflowPolicy);
+  using PolicyType = spdlog::async_overflow_policy;
+  spdlog::set_async_mode( queueSize, block_on_overflow
+                                        ? PolicyType::block_retry
+                                        : PolicyType::discard_log_msg );
 }
 
 void
 LoggerImpl
-::SetAsyncQueueBlockOnOverflow(void)
-{
-  this->m_AsyncQueueOverflowPolicy = AsyncQueueOverflowPolicyType::block_retry;
-}
-
-void
-LoggerImpl
-::SetAsyncQueueDiscardOnOverflow(void)
-{
-  this->m_AsyncQueueOverflowPolicy = AsyncQueueOverflowPolicyType::discard_log_msg;
-}
-
-void
-LoggerImpl
-::SetAsyncQueueSize( const size_t& queueSize )
-{
-  this->m_AsyncQueueSize = queueSize;
-}
-
-void
-LoggerImpl
-::AsyncQueueFlush( void )
+::AsyncQueueFlush()
 {
   for( const auto& identifierAndLogger : this->m_Loggers )
   {
@@ -124,7 +108,7 @@ LoggerImpl
 
 void
 LoggerImpl
-::AddStream( const std::string& identifier, std::ostream& stream, const bool& forceFlush )
+::AddStream( const std::string& identifier, std::ostream& stream, const bool forceFlush )
 {
   auto sink = std::make_shared< spdlog::sinks::ostream_sink< std::mutex > >(stream, forceFlush);
   auto logger = spdlog::details::registry::instance().create(identifier, sink );
@@ -141,7 +125,7 @@ LoggerImpl
 
 void
 LoggerImpl
-::RemoveAllStreams( void )
+::RemoveAllStreams()
 {
   for( const auto& identifierAndLogger : this->m_Loggers )
   {

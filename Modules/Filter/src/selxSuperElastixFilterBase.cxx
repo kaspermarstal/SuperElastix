@@ -35,7 +35,7 @@ SuperElastixFilterBase
   this->m_Blueprint = nullptr;
 
   // Create default logger which redirects to std::cout
-  this->m_Logger = Logger::New();
+  this->m_Logger = std::make_shared<Logger>();
   //TODO: cannot have independent loggers redirecting to cout. 
   //this->m_Logger->AddStream("cout", std::cout);
   //TODO: this seems to affect other instantiated loggers too.
@@ -272,7 +272,7 @@ SuperElastixFilterBase
 
 void
 SuperElastixFilterBase
-::Update( void )
+::Update()
 {
   //this->SetPrimaryOutput()
   this->GenerateOutputInformation();
@@ -281,7 +281,7 @@ SuperElastixFilterBase
 
 void 
 SuperElastixFilterBase
-::SetLogger( Logger::Pointer logger )
+::SetLogger( std::shared_ptr<Logger> logger )
 {
   this->m_Logger = logger;
   // no need to call Modified, since logging doesn't change any calculations.

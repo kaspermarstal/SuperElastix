@@ -19,9 +19,14 @@
 
 #include "selxBlueprintImpl.h"
 #include "selxLoggerImpl.h"
-#include <ostream>
 
+#include <ostream>
 #include <stdexcept>
+
+#include <boost/algorithm/string.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
 
 namespace selx
 {
@@ -47,7 +52,7 @@ class vertex_label_writer
 {
 public:
 
-  vertex_label_writer( NameType _name, ParameterMapType _parameterMap ) : name( _name ), parameterMap( _parameterMap ) {}
+  vertex_label_writer( NameType name, ParameterMapType parameterMap ) : name( name ), parameterMap( parameterMap ) {}
   template< class VertexOrEdge >
   void operator()( std::ostream & out, const VertexOrEdge & v ) const
   {
@@ -62,7 +67,7 @@ private:
 };
 
 template< class NameType, class ParameterMapType >
-inline vertex_label_writer< NameType, ParameterMapType >
+vertex_label_writer< NameType, ParameterMapType >
 make_vertex_label_writer( NameType n, ParameterMapType p )
 {
   return vertex_label_writer< NameType, ParameterMapType >( n, p );
@@ -74,7 +79,7 @@ class edge_label_writer
 {
 public:
 
-  edge_label_writer( ParameterMapType _parameterMap ) : parameterMap( _parameterMap ) {}
+  edge_label_writer( ParameterMapType parameterMap ) : parameterMap( parameterMap ) {}
   template< class VertexOrEdge >
   void operator()( std::ostream & out, const VertexOrEdge & v ) const
   {
@@ -88,18 +93,18 @@ private:
 };
 
 template< class ParameterMapType >
-inline edge_label_writer< ParameterMapType >
+edge_label_writer< ParameterMapType >
 make_edge_label_writer( ParameterMapType p )
 {
   return edge_label_writer< ParameterMapType >( p );
 }
 
 // TODO: remove this argumentless constructor
-BlueprintImpl::BlueprintImpl( void ) : m_LoggerImpl(&(Logger::New()->GetLoggerImpl()))
+BlueprintImpl::BlueprintImpl() : m_Logger(std::make_shared<Logger>())
 {
 }
 
-BlueprintImpl::BlueprintImpl( LoggerImpl & loggerImpl ) : m_LoggerImpl(&loggerImpl)
+BlueprintImpl::BlueprintImpl( std::shared_ptr<Logger> logger ) : m_Logger(logger)
 {
 }
 
@@ -151,7 +156,7 @@ BlueprintImpl
 
 BlueprintImpl::ComponentNamesType
 BlueprintImpl
-::GetComponentNames( void ) const
+::GetComponentNames() const
 {
   ComponentNamesType container;
   for( auto it = boost::vertices( this->m_Graph.graph() ).first; it != boost::vertices( this->m_Graph.graph() ).second; ++it )
@@ -235,7 +240,7 @@ BlueprintImpl
 ::ComposeWith( const BlueprintImpl & other )
 {
   // Make a backup of the current blueprint status in case composition fails
-  GraphType graph_backup = GraphType( this->m_Graph );
+  GraphType graph_backup = this->m_Graph;
 
   // Copy-in all components (Nodes)
   for( auto const & componentName : other.GetComponentNames() )
@@ -359,7 +364,7 @@ BlueprintImpl
   ComponentNamesType container;
   //auto vertex = this->m_Graph.vertex(name);
   //boost::in_edges(vertex, this->m_Graph);
-  InputIteratorPairType inputIteratorPair = boost::in_edges( this->m_Graph.vertex( name ), this->m_Graph );
+  auto inputIteratorPair = boost::in_edges( this->m_Graph.vertex( name ), this->m_Graph );
   for( auto it = inputIteratorPair.first; it != inputIteratorPair.second; ++it )
   {
     container.push_back( this->m_Graph.graph()[ it->m_source ].name );
@@ -374,7 +379,7 @@ BlueprintImpl
 ::GetOutputNames( const ComponentNameType name ) const
 {
   ComponentNamesType     container;
-  OutputIteratorPairType outputIteratorPair = boost::out_edges( this->m_Graph.vertex( name ), this->m_Graph );
+  auto outputIteratorPair = boost::out_edges( this->m_Graph.vertex( name ), this->m_Graph );
   for( auto it = outputIteratorPair.first; it != outputIteratorPair.second; ++it )
   {
     container.push_back( this->m_Graph.graph()[ it->m_target ].name );
@@ -437,30 +442,30 @@ BlueprintImpl::MergeFromFile(const std::string & fileNameString)
 {
   PathType fileName(fileNameString);
 
-  this->m_LoggerImpl->Log(LogLevel::INF, "Loading {0} ... ", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Loading {0} ... ", fileName.string());
   auto propertyTree = ReadPropertyTree(fileName);
-  this->m_LoggerImpl->Log(LogLevel::INF, "Loading {0} ... Done", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Loading {0} ... Done", fileName.string());
 
-  this->m_LoggerImpl->Log(LogLevel::INF, "Checking {0} for include files ... ", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Checking {0} for include files ... ", fileName.string());
   auto includesList = FindIncludes(propertyTree);
 
   if (includesList.size() > 0)
   {
     for (auto const & includePath : includesList)
     {
-      this->m_LoggerImpl->Log(LogLevel::INF, "Including file {0} ... ", includePath);
+      this->m_Logger->Log(LogLevel::INF, "Including file {0} ... ", includePath.string());
       this->MergeFromFile(includePath.string());
     }
   }
-  this->m_LoggerImpl->Log(LogLevel::INF, "Checking {0} for include files ... done", fileName);
+  this->m_Logger->Log(LogLevel::INF, "Checking {0} for include files ... done", fileName.string());
   this->MergeProperties(propertyTree);
   return;
 }
 
 void
-BlueprintImpl::SetLoggerImpl( LoggerImpl & loggerImpl )
+BlueprintImpl::SetLogger( std::shared_ptr<Logger> logger )
 {
-  this->m_LoggerImpl = &loggerImpl;
+  this->m_Logger = logger;
 }
 
 BlueprintImpl::PropertyTreeType
@@ -538,7 +543,7 @@ BlueprintImpl::FromPropertyTree(const PropertyTreeType & pt)
     std::string connectionName = v.second.data();
     if (connectionName != "")
     {
-      this->m_LoggerImpl->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
+      this->m_Logger->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
     }
     std::string      outName;
     std::string      inName;
@@ -560,7 +565,7 @@ BlueprintImpl::FromPropertyTree(const PropertyTreeType & pt)
       }
       else if (connectionKey == "Name")
       {
-        this->m_LoggerImpl->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
+        this->m_Logger->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
         continue;
       }
       else
@@ -615,7 +620,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
           if (ownValues.size() != otherValues.size())
           {
             // No, based on the number of values we see that it is different. Blueprints cannot be Composed
-            this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+            this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
             throw std::invalid_argument("Merging blueprints failed : Component properties cannot be redefined");
           }
           else
@@ -627,7 +632,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
               if (*otherValue != *ownValue)
               {
                 // No, at least one value is different. Blueprints cannot be Composed
-                this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+                this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
                 throw std::invalid_argument("Merging blueprints failed: Component properties cannot be redefined");
               }
             }
@@ -654,7 +659,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
     std::string connectionName = v.second.data();
     if (connectionName != "")
     {
-      this->m_LoggerImpl->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
+      this->m_Logger->Log(LogLevel::INF, "Found {0}, but connection names are ignored.", connectionName);
     }
     std::string      outName;
     std::string      inName;
@@ -676,7 +681,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
       }
       else if (connectionKey == "Name")
       {
-        this->m_LoggerImpl->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
+        this->m_Logger->Log(LogLevel::WRN, "Connections with key 'Name' are ignored.");
         continue;
       }
       else
@@ -704,7 +709,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
           if (ownValues.size() != otherValues.size())
           {
             // No, based on the number of values we see that it is different. Blueprints cannot be Composed
-            this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+            this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
             throw std::invalid_argument("Merging blueprints failed: Component properties cannot be redefined");
           }
           else
@@ -716,7 +721,7 @@ BlueprintImpl::MergeProperties(const PropertyTreeType & pt)
               if (*otherValue != *ownValue)
               {
                 // No, at least one value is different. Blueprints cannot be Composed
-                this->m_LoggerImpl->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
+                this->m_Logger->Log(LogLevel::ERR, "Merging blueprints failed : Component properties cannot be redefined");
                 throw std::invalid_argument("Merging blueprints failed: Component properties cannot be redefined");
               }
             }

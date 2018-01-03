@@ -27,145 +27,144 @@ Blueprint
 ::Blueprint()
 {
   // Create default logger which redirects to std::cout
-  this->m_Logger = Logger::New();
+  this->m_Logger = std::make_shared<Logger>();
   //TODO: cannot have independent loggers redirecting to cout. 
   //this->m_Logger->AddStream("cout", std::cout);
   //TODO: this seems to affect other instantiated loggers too.
   //this->m_Logger->SetLogLevel(selx::LogLevel::INF);
 
-  this->m_Blueprint = BlueprintImplPointer( new BlueprintImpl( this->m_Logger->GetLoggerImpl() ) );
-  
+  this->m_Implementation = std::make_unique<BlueprintImpl>( this->m_Logger );
 }
 
 
 const BlueprintImpl &
 Blueprint
-::GetBlueprintImpl( void ) const
+::GetBlueprintImpl() const
 {
-  return *this->m_Blueprint;
+  return *this->m_Implementation;
 }
 
 
 bool
 Blueprint
-::SetComponent( ComponentNameType name, ParameterMapType parameterMap )
+::SetComponent( const ComponentNameType& name, const ParameterMapType& parameterMap )
 {
   this->Modified();
-  return this->m_Blueprint->SetComponent( name, parameterMap );
+  return this->m_Implementation->SetComponent( name, parameterMap );
 }
 
 
 Blueprint::ParameterMapType
 Blueprint
-::GetComponent( ComponentNameType componentName ) const
+::GetComponent( const ComponentNameType& componentName ) const
 {
-  return this->m_Blueprint->GetComponent( componentName );
+  return this->m_Implementation->GetComponent( componentName );
 }
 
 
 bool
 Blueprint
-::DeleteComponent( ComponentNameType componentName )
+::DeleteComponent( const ComponentNameType& componentName )
 {
   this->Modified();
-  return this->m_Blueprint->DeleteComponent( componentName );
+  return this->m_Implementation->DeleteComponent( componentName );
 }
 
 
 Blueprint::ComponentNamesType
-Blueprint::GetComponentNames( void ) const
+Blueprint::GetComponentNames() const
 {
-  return this->m_Blueprint->GetComponentNames();
+  return this->m_Implementation->GetComponentNames();
 }
 
 
 bool
 Blueprint
-::SetConnection( ComponentNameType upstream, ComponentNameType downstream, ParameterMapType parameterMap )
+::SetConnection( const ComponentNameType& upstream, const ComponentNameType& downstream, const ParameterMapType& parameterMap )
 {
   this->Modified();
-  return this->m_Blueprint->SetConnection( upstream, downstream, parameterMap );
+  return this->m_Implementation->SetConnection( upstream, downstream, parameterMap );
 }
 
 
 Blueprint::ParameterMapType
 Blueprint
-::GetConnection( ComponentNameType upstream, ComponentNameType downstream ) const
+::GetConnection( const ComponentNameType& upstream, const ComponentNameType& downstream ) const
 {
-  return this->m_Blueprint->GetConnection( upstream, downstream );
+  return this->m_Implementation->GetConnection( upstream, downstream );
 }
 
 
 bool
 Blueprint
-::DeleteConnection( ComponentNameType upstream, ComponentNameType downstream )
+::DeleteConnection( const ComponentNameType& upstream, const ComponentNameType& downstream )
 {
   this->Modified();
-  return this->m_Blueprint->DeleteConnection( upstream, downstream );
+  return this->m_Implementation->DeleteConnection( upstream, downstream );
 }
 
 
 bool
 Blueprint
-::ComponentExists( ComponentNameType componentName ) const
+::ComponentExists( const ComponentNameType& componentName ) const
 {
-  return this->m_Blueprint->ComponentExists( componentName );
+  return this->m_Implementation->ComponentExists( componentName );
 }
 
 
 bool
 Blueprint
-::ConnectionExists( ComponentNameType upstream, ComponentNameType downstream ) const
+::ConnectionExists( const ComponentNameType& upstream, const ComponentNameType& downstream ) const
 {
-  return this->m_Blueprint->ConnectionExists( upstream, downstream );
+  return this->m_Implementation->ConnectionExists( upstream, downstream );
 }
 
 
 bool
 Blueprint
-::ComposeWith( Blueprint::ConstPointer other)
+::ComposeWith( ConstPointer other)
 {
   this->Modified();
-  return this->m_Blueprint->ComposeWith( other->GetBlueprintImpl() );
+  return this->m_Implementation->ComposeWith( other->GetBlueprintImpl() );
 }
 
 
 Blueprint::ComponentNamesType
 Blueprint
-::GetOutputNames( const ComponentNameType name ) const
+::GetOutputNames( const ComponentNameType& name ) const
 {
-  return this->m_Blueprint->GetOutputNames( name );
+  return this->m_Implementation->GetOutputNames( name );
 }
 
 
 Blueprint::ComponentNamesType
 Blueprint
-::GetInputNames( const ComponentNameType name ) const
+::GetInputNames( const ComponentNameType& name ) const
 {
-  return this->m_Blueprint->GetInputNames( name );
+  return this->m_Implementation->GetInputNames( name );
 }
 
 
 void
 Blueprint
-::Write( const std::string filename )
+::Write( const std::string& filename )
 {
-  this->m_Blueprint->Write( filename );
+  this->m_Implementation->Write( filename );
 }
 
 void
 Blueprint
 ::MergeFromFile( const std::string& filename )
 {
-  this->m_Blueprint->MergeFromFile( filename );
+  this->m_Implementation->MergeFromFile( filename );
 }
 
 void
 Blueprint
-::SetLogger( Logger::Pointer logger )
+::SetLogger( std::shared_ptr<Logger> logger )
 {
   this->m_Logger = logger;
-  this->m_Blueprint->SetLoggerImpl( logger->GetLoggerImpl() );
+  this->m_Implementation->SetLogger( logger );
 }
 
 

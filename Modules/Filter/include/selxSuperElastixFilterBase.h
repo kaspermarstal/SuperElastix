@@ -64,11 +64,6 @@ public:
   itkSetObjectMacro( Blueprint, Blueprint );
   itkGetObjectMacro( Blueprint, Blueprint );
 
-  typedef Logger::Pointer        LoggerPointer;
-  typedef Logger::ConstPointer   LoggerConstPointer;
-  itkSetObjectMacro( Logger, Logger );
-  itkGetObjectMacro( Logger, Logger );
-
   // Adding a BlueprintImpl composes SuperElastixFilter' internal blueprint (accessible by Set/Get BlueprintImpl) with the otherBlueprint.
   // void AddBlueprint(BlueprintPointer otherBlueprint);
 
@@ -111,7 +106,7 @@ public:
   void Update( void ) ITK_OVERRIDE;
 
   // The default logger redirects to std::cout 
-  void SetLogger( Logger::Pointer logger );
+  void SetLogger( std::shared_ptr<Logger> logger );
 
 protected:
 
@@ -124,7 +119,7 @@ protected:
 
   std::unique_ptr< NetworkBuilderFactoryBase > m_NetworkBuilderFactory;
   std::unique_ptr< NetworkBuilderBase >        m_NetworkBuilder;
-  LoggerPointer m_Logger;
+  std::shared_ptr<Logger> m_Logger;
 
 private:
 

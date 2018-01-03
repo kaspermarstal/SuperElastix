@@ -132,7 +132,7 @@ public:
   typedef itk::TransformFileWriterTemplate<double> TransformWriterType;
   typedef itk::TransformFileReaderTemplate<double> TransformReaderType;
   
-  Logger::Pointer logger;
+  std::shared_ptr<Logger> logger;
 
   virtual void SetUp()
   {
@@ -140,7 +140,7 @@ public:
     // register the components we want to have available in SuperElastix
     superElastixFilter = SuperElastixFilterCustomComponents< RegisterComponents >::New();
     dataManager        = DataManagerType::New();
-    logger             = Logger::New();
+    logger             = std::make_shared<Logger>();
     logger->AddStream( "cout", std::cout );
     logger->SetLogLevel( LogLevel::TRC );
   }

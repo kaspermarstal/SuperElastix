@@ -24,12 +24,14 @@ namespace selx {
 
 Logger
 ::Logger() {
-  this->m_LoggerImpl = LoggerImplPointer( new LoggerImpl() );
+  this->m_LoggerImpl = std::make_unique<LoggerImpl>();
 }
+
+Logger::~Logger() = default;
 
 void
 Logger
-::SetLogLevel( const LogLevel& level )
+::SetLogLevel( const LogLevel level )
 {
   this->m_LoggerImpl->SetLogLevel( level );
 }
@@ -50,30 +52,9 @@ Logger
 
 void
 Logger
-::SetAsyncMode()
+::SetAsyncMode( const bool block_on_overflow, const size_t queueSize )
 {
-  this->m_LoggerImpl->SetAsyncMode();
-}
-
-void
-Logger
-::SetAsyncQueueBlockOnOverflow(void)
-{
-  this->m_LoggerImpl->SetAsyncQueueBlockOnOverflow();
-}
-
-void
-Logger
-::SetAsyncQueueDiscardOnOverflow(void)
-{
-  this->m_LoggerImpl->SetAsyncQueueDiscardOnOverflow();
-}
-
-void
-Logger
-::SetAsyncQueueSize( const size_t& queueSize )
-{
-  this->m_LoggerImpl->SetAsyncQueueSize( queueSize );
+  this->m_LoggerImpl->SetAsyncMode( block_on_overflow, queueSize );
 }
 
 void
@@ -85,7 +66,7 @@ Logger
 
 void
 Logger
-::AddStream( const std::string& identifier, std::ostream& stream, const bool& forceFlush )
+::AddStream( const std::string& identifier, std::ostream& stream, const bool forceFlush )
 {
   this->m_LoggerImpl->AddStream( identifier, stream, forceFlush);
 }
@@ -99,7 +80,7 @@ Logger
 
 void
 Logger
-::RemoveAllStreams( void )
+::RemoveAllStreams()
 {
   this->m_LoggerImpl->RemoveAllStreams();
 }
@@ -107,14 +88,18 @@ Logger
 
 void
 Logger
-::Log( const LogLevel& level, const std::string& message )
+::Log( const LogLevel level, const std::string& message )
 {
   this->m_LoggerImpl->Log( level, message );
 }
 
+void Logger::Log(const LogLevel level, const std::string& message, const std::string& argument) {
+  this->m_LoggerImpl->Log( level, message, argument );
+}
+
 LoggerImpl&
 Logger
-::GetLoggerImpl( void )
+::GetLoggerImpl()
 {
   return *this->m_LoggerImpl;
 }
