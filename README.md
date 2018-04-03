@@ -1,5 +1,7 @@
 # SuperElastix image registration toolbox #
 
+Forked, just to test [Add GitHub - CDash - Jenkins integration] (https://github.com/SuperElastix/SuperElastix/issues/163)
+
 The objective of image registration is to find the spatial relationship between two or more images. 
 In the last decades numerous image registration methods and tools have emerged from the research community. 
 Implementation of these methods, however, are scattered over a plethora of toolboxes each with their own interface, limitations and modus operandi. 
