@@ -1,3 +1,4 @@
+#error Just checking GitHub - CDash - Jenkins integration -- https://github.com/SuperElastix/SuperElastix/issues/163
 /*=========================================================================
  *
  *  Copyright Leiden University Medical Center, Erasmus University Medical
