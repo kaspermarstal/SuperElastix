@@ -75,7 +75,7 @@ public:
     if( !v.empty() ) {
       if( v.size() > 1 ) out << '[';
       std::copy( v.begin(), v.end(), std::ostream_iterator< T >( out, ", " ) );
-      out << "\b\b";
+      RemoveTrailingCharsFromOutputStringStream(out, 2);
       if( v.size() > 1 ) out << "]";
     }
     return out.str();
@@ -91,7 +91,8 @@ public:
       {
         out << item.first << ": " << item.second << ", ";
       }
-      out << "\b\b}";
+      RemoveTrailingCharsFromOutputStringStream(out, 2);
+      out << "}";
     }
     return out.str();
   }
@@ -106,12 +107,25 @@ public:
       {
         out << item.first << ": " << this << item.second << ", ";
       }
-      out << "\b\b}";
+      RemoveTrailingCharsFromOutputStringStream(out, 2);
+      out << "}";
     }
     return out.str();
   }
 
 private:
+  void RemoveTrailingCharsFromOutputStringStream(
+    std::ostringstream& outputStringStream,
+    unsigned numberOfCharsToRemove)
+  {
+    auto str = outputStringStream.str();
+    const auto numberOfCharsOfString = str.size();
+    if (numberOfCharsOfString >= numberOfCharsToRemove)
+    {
+      str.erase(numberOfCharsOfString - numberOfCharsToRemove);
+      outputStringStream.str(str);
+    }
+  }
 
   // Spdlog configuration
   spdlog::level::level_enum ToSpdLogLevel( const LogLevel& level );
