@@ -70,7 +70,7 @@ public:
   // Stream std:vector to string
   // TODO: Use std::copy_n to print [n1, n2, ... , n-1, n] if vector is long
   template < typename T >
-  std::string operator<<( const std::vector< T >& v ) const {
+  std::string ToString( const std::vector< T >& v ) const {
     std::ostringstream out;
     if( !v.empty() ) {
       if( v.size() > 1 ) out << '[';
@@ -83,7 +83,7 @@ public:
 
   // Stream std::map< T, T > to string
   template < typename T >
-  std::string operator<<( const std::map< T, T >& m ) const {
+  std::string ToString( const std::map< T, T >& m ) const {
     std::ostringstream out;
     if( !m.empty() ) {
       out << "{";
@@ -99,7 +99,7 @@ public:
 
   // Stream std::map< T, std::vector< T > > to string
   template < typename T >
-  std::string operator<<( const std::map< T, std::vector< T > >& m ) const {
+  std::string ToString( const std::map< T, std::vector< T > >& m ) const {
     std::ostringstream out;
     if( !m.empty() ) {
       out << "{";
