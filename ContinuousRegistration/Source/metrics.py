@@ -1,7 +1,7 @@
 import numpy as np
 import SimpleITK as sitk
-from ContinuousRegistration.Source.util import warp_image, warp_point_set
-from ContinuousRegistration.Source.util import logging
+from util import warp_image, warp_point_set
+from util import logging
 
 def tre(superelastix, point_sets, deformation_field_file_names):
     try:

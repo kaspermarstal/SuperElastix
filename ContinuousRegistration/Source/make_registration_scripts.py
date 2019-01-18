@@ -1,6 +1,6 @@
 import os, json, argparse
-from ContinuousRegistration.Source.datasets import logging, load_datasets
-from ContinuousRegistration.Source.util import load_submissions
+from datasets import logging, load_datasets
+from util import load_submissions
 
 parser = argparse.ArgumentParser(description='Continuous Registration Challenge command line interface.')
 parser.add_argument('--superelastix', '-selx', required=True,

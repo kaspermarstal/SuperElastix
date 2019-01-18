@@ -1,10 +1,10 @@
-import glob, csv, re
+import glob, csv, re, os, stat
 from abc import ABCMeta
 from itertools import combinations
 
-from ContinuousRegistration.Source.metrics import tre, hausdorff, inverse_consistency_labels, \
+from metrics import tre, hausdorff, inverse_consistency_labels, \
     inverse_consistency_points, label_overlap
-from ContinuousRegistration.Source.util import *
+from util import *
 
 class Dataset:
     """
@@ -37,6 +37,9 @@ class Dataset:
                 os.path.join(output_directory, file_names['disp_field_file_names'][0]),
                 os.path.splitext(shell_script_file_name_0)[0] + '.log'))
 
+        # make shell script executable (like 'chmod +x' )        
+        os.chmod(shell_script_file_name_0, os.stat(shell_script_file_name_0).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        
         logging.info('Wrote %s' % shell_script_file_name_0)
 
         # Fixed=image1, Moving=image0, Output: image0_to_image1
